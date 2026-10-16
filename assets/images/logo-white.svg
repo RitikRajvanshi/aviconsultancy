@@ -1,66 +1,55 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 92" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 84" fill="none">
   <defs>
-    <!-- Gradients -->
-    <linearGradient id="wLeftGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <!-- Executive White Gradients -->
+    <linearGradient id="whiteFacet" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="60%" stop-color="#cbd5e1"/>
+      <stop offset="100%" stop-color="#94a3b8"/>
+    </linearGradient>
+    <linearGradient id="skyFacet" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="60%" stop-color="#0ea5e9"/>
-      <stop offset="100%" stop-color="#34d399"/>
+      <stop offset="50%" stop-color="#0ea5e9"/>
+      <stop offset="100%" stop-color="#0284c7"/>
     </linearGradient>
-    <linearGradient id="wRightGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#38bdf8"/>
-    </linearGradient>
-    <linearGradient id="wStarGold" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="goldEdgeW" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#fbbf24"/>
       <stop offset="100%" stop-color="#f59e0b"/>
     </linearGradient>
   </defs>
 
-  <!-- ================= EMBLEM ================= -->
-  <g transform="translate(6, 4)">
-    <!-- Main Arch of Letter A (Left Leg) -->
-    <path d="M42 16 C30 26, 12 56, 8 76 C16 75, 23 70, 26 62 C29 54, 35 34, 42 16 Z" fill="url(#wLeftGrad)"/>
-    
-    <!-- Main Arch of Letter A (Right Leg) -->
-    <path d="M42 16 C48 30, 60 58, 68 76 C60 76, 52 70, 48 62 C45 56, 42 36, 42 16 Z" fill="url(#wRightGrad)"/>
+  <!-- ================= ARCHITECTURAL "AV" MONOGRAM ================= -->
+  <g transform="translate(6, 6)">
+    <!-- Letter A: Left Main Beam -->
+    <polygon points="36,4 10,64 21,64 42,18" fill="url(#whiteFacet)"/>
 
-    <!-- Left Human Figure (Candidate) -->
-    <circle cx="27" cy="38" r="6.5" fill="#38bdf8"/>
-    <path d="M19 55 C19 46, 27 46, 32 50 C29 55, 24 57, 19 55 Z" fill="#0ea5e9"/>
+    <!-- Letter A: Bottom Left 3D Bevel Foot -->
+    <polygon points="10,64 21,64 27,50 18,50" fill="#64748b" opacity="0.6"/>
 
-    <!-- Right Human Figure (Employer) -->
-    <circle cx="49" cy="40" r="6.5" fill="#34d399"/>
-    <path d="M44 51 C48 46, 56 46, 57 55 C52 57, 47 55, 44 51 Z" fill="#10b981"/>
+    <!-- Letter A: Horizontal Tie Bar -->
+    <polygon points="21,46 41,46 38,53 19,53" fill="url(#whiteFacet)"/>
 
-    <!-- The Handshake / Union Crossbar -->
-    <path d="M26 52 C32 46, 42 46, 48 52 C44 56, 32 57, 26 52 Z" fill="#fbbf24"/>
-    <circle cx="37" cy="51" r="2.5" fill="#ffffff"/>
+    <!-- Letter V: Interlocking Left Beam -->
+    <polygon points="36,4 42,18 29,48 44,74 52,58 39,32" fill="url(#skyFacet)"/>
 
-    <!-- Upward Career Growth Arrow -->
-    <path d="M46 56 L62 27 L56 26 L67 15 L73 28 L67 27 L52 58 Z" fill="url(#wRightGrad)"/>
-    
-    <!-- 3D Golden Placement Star -->
-    <g transform="translate(67, 13)">
-      <polygon points="0,-12 3.5,-3.5 12,0 3.5,3.5 0,12 -3.5,3.5 -12,0 -3.5,-3.5" fill="url(#wStarGold)"/>
-      <circle cx="0" cy="0" r="2" fill="#ffffff"/>
-    </g>
+    <!-- Letter V: Right Ascending Beam -->
+    <polygon points="44,74 66,22 56,22 39,60" fill="url(#skyFacet)"/>
+
+    <!-- Precision Metallic Gold Pinstripe Chamfer -->
+    <path d="M 37 20 L 44 68 L 60 26" stroke="url(#goldEdgeW)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
 
-  <!-- ================= TYPOGRAPHY ================= -->
+  <!-- ================= EXECUTIVE WORDMARK ================= -->
   <!-- "AVI CONSULTANCY" -->
-  <text x="96" y="44" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-size="34" font-weight="900" fill="#ffffff" letter-spacing="1.2">
-    AVI <tspan fill="#38bdf8">CONSULTANCY</tspan>
+  <text x="88" y="38" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-size="29" font-weight="900" fill="#ffffff" letter-spacing="2">
+    AVI <tspan fill="#38bdf8" font-weight="800">CONSULTANCY</tspan>
   </text>
 
-  <!-- Pill Tagline Badge -->
-  <rect x="96" y="55" width="375" height="24" rx="6" fill="rgba(255, 255, 255, 0.08)" stroke="rgba(56, 189, 248, 0.4)" stroke-width="1.2"/>
-  
-  <!-- Active Pulse Icon -->
-  <circle cx="110" cy="67" r="4" fill="#34d399"/>
-  <circle cx="110" cy="67" r="6.5" fill="#34d399" opacity="0.3"/>
+  <!-- Gold Divider Line -->
+  <line x1="88" y1="47" x2="136" y2="47" stroke="url(#goldEdgeW)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="142" y1="47" x2="465" y2="47" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1"/>
 
-  <!-- Subtitle Text -->
-  <text x="124" y="71" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-size="11.5" font-weight="700" fill="#bae6fd" letter-spacing="1.5">
-    HUMAN RESOURCES &#8226; RECRUITMENT &#8226; PLACEMENT
+  <!-- Corporate Tagline -->
+  <text x="88" y="64" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-size="9.5" font-weight="700" fill="#94a3b8" letter-spacing="2.8">
+    EXECUTIVE RECRUITMENT &#38; MANAGEMENT SOLUTIONS
   </text>
 </svg>

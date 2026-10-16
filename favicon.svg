@@ -1,28 +1,32 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
   <defs>
-    <linearGradient id="favGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#032047"/>
-      <stop offset="50%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#0ea5e9"/>
+    <linearGradient id="favNavy" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b192c"/>
+      <stop offset="100%" stop-color="#1e3a8a"/>
     </linearGradient>
-    <linearGradient id="favStar" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="favBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+    <linearGradient id="favGold" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#f59e0b"/>
       <stop offset="100%" stop-color="#fbbf24"/>
     </linearGradient>
   </defs>
-  <!-- Rounded Squircle Badge -->
-  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#favGrad)" stroke="#38bdf8" stroke-width="1.5"/>
-  
-  <!-- Main Arch A -->
-  <path d="M30 16 L16 52 L23 52 L30 33 L37 52 L44 52 Z" fill="#ffffff"/>
-  
-  <!-- Golden Handshake / Connection Arch -->
-  <path d="M19 43 C24 39, 36 39, 41 43" stroke="url(#favStar)" stroke-width="3" stroke-linecap="round"/>
 
-  <!-- Left Figure (Candidate) and Right Figure (Employer) -->
-  <circle cx="21" cy="29" r="3" fill="#38bdf8"/>
-  <circle cx="39" cy="29" r="3" fill="#34d399"/>
+  <!-- Premium Dark Rounded Squircle -->
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="#0b192c" stroke="#1e3a8a" stroke-width="1.5"/>
 
-  <!-- Placement Star at Apex -->
-  <polygon points="30,7 32,12 37,13.5 32,15 30,20 28,15 23,13.5 28,12" fill="url(#favStar)"/>
+  <!-- Letter A Left Beam -->
+  <polygon points="30,10 13,52 20,52 34,20" fill="#ffffff"/>
+
+  <!-- Letter A Crossbar -->
+  <polygon points="19,39 33,39 31,44 18,44" fill="#ffffff"/>
+
+  <!-- Letter V Interlocking Right Beam -->
+  <polygon points="30,10 34,20 25,40 36,54 42,42 32,22" fill="url(#favBlue)"/>
+  <polygon points="36,54 51,19 44,19 32,44" fill="url(#favBlue)"/>
+
+  <!-- Gold Accent Pinstripe -->
+  <path d="M 30 18 L 36 50 L 47 21" stroke="url(#favGold)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

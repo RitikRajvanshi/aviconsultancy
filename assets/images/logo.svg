@@ -1,70 +1,66 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 92" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 84" fill="none">
   <defs>
-    <!-- Gradients -->
-    <linearGradient id="aLeftGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#032047"/>
-      <stop offset="60%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#059669"/>
+    <!-- Executive Gradients -->
+    <linearGradient id="navyFacet" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b192c"/>
+      <stop offset="60%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#172554"/>
     </linearGradient>
-    <linearGradient id="aRightGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0369a1"/>
-      <stop offset="100%" stop-color="#0284c7"/>
+    <linearGradient id="cobaltFacet" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1d4ed8"/>
+      <stop offset="50%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#1e40af"/>
     </linearGradient>
-    <linearGradient id="starGold" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="goldEdge" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#f59e0b"/>
       <stop offset="50%" stop-color="#fbbf24"/>
       <stop offset="100%" stop-color="#d97706"/>
     </linearGradient>
-    <filter id="subtleDrop" x="-10%" y="-10%" width="120%" height="120%" filterUnits="userSpaceOnUse">
-      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0284c7" flood-opacity="0.2"/>
+    <linearGradient id="shadowFacet" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#030712"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <filter id="execDepth" x="-10%" y="-10%" width="120%" height="120%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#0b192c" flood-opacity="0.18"/>
     </filter>
   </defs>
 
-  <!-- ================= EMBLEM ================= -->
-  <g transform="translate(6, 4)" filter="url(#subtleDrop)">
-    <!-- Main Arch of Letter A (Left Leg) -->
-    <path d="M42 16 C30 26, 12 56, 8 76 C16 75, 23 70, 26 62 C29 54, 35 34, 42 16 Z" fill="url(#aLeftGrad)"/>
-    
-    <!-- Main Arch of Letter A (Right Leg) -->
-    <path d="M42 16 C48 30, 60 58, 68 76 C60 76, 52 70, 48 62 C45 56, 42 36, 42 16 Z" fill="url(#aRightGrad)"/>
+  <!-- ================= ARCHITECTURAL "AV" MONOGRAM ================= -->
+  <g transform="translate(6, 6)" filter="url(#execDepth)">
+    <!-- Letter A: Left Main Beam -->
+    <polygon points="36,4 10,64 21,64 42,18" fill="url(#navyFacet)"/>
 
-    <!-- Left Human Figure (Candidate Reaching Up) -->
-    <circle cx="27" cy="38" r="6.5" fill="#0369a1"/>
-    <path d="M19 55 C19 46, 27 46, 32 50 C29 55, 24 57, 19 55 Z" fill="#0284c7"/>
+    <!-- Letter A: Bottom Left 3D Bevel Foot -->
+    <polygon points="10,64 21,64 27,50 18,50" fill="url(#shadowFacet)" opacity="0.85"/>
 
-    <!-- Right Human Figure (Employer Welcoming) -->
-    <circle cx="49" cy="40" r="6.5" fill="#0284c7"/>
-    <path d="M44 51 C48 46, 56 46, 57 55 C52 57, 47 55, 44 51 Z" fill="#0369a1"/>
+    <!-- Letter A: Horizontal Tie Bar -->
+    <polygon points="21,46 41,46 38,53 19,53" fill="url(#navyFacet)"/>
 
-    <!-- The Handshake / Union Crossbar -->
-    <path d="M26 52 C32 46, 42 46, 48 52 C44 56, 32 57, 26 52 Z" fill="#d97706"/>
-    <circle cx="37" cy="51" r="2.5" fill="#fbbf24"/>
+    <!-- Letter V: Interlocking Left Beam (Passing under A's apex) -->
+    <polygon points="36,4 42,18 29,48 44,74 52,58 39,32" fill="url(#cobaltFacet)"/>
 
-    <!-- Upward Career Growth Arrow (Shooting up right leg) -->
-    <path d="M46 56 L62 27 L56 26 L67 15 L73 28 L67 27 L52 58 Z" fill="url(#aRightGrad)"/>
-    
-    <!-- 3D Golden Placement Star at Peak of Arrow -->
-    <g transform="translate(67, 13)">
-      <polygon points="0,-12 3.5,-3.5 12,0 3.5,3.5 0,12 -3.5,3.5 -12,0 -3.5,-3.5" fill="url(#starGold)"/>
-      <circle cx="0" cy="0" r="2" fill="#ffffff"/>
-    </g>
+    <!-- Letter V: Right Ascending Beam -->
+    <polygon points="44,74 66,22 56,22 39,60" fill="url(#cobaltFacet)"/>
+
+    <!-- Letter V: Right Top Head Cap -->
+    <polygon points="56,22 66,22 72,22 62,22" fill="#1e3a8a"/>
+
+    <!-- Precision Metallic Gold Pinstripe Chamfer -->
+    <path d="M 37 20 L 44 68 L 60 26" stroke="url(#goldEdge)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
 
-  <!-- ================= TYPOGRAPHY ================= -->
+  <!-- ================= EXECUTIVE WORDMARK ================= -->
   <!-- "AVI CONSULTANCY" -->
-  <text x="96" y="44" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-size="34" font-weight="900" fill="#0f172a" letter-spacing="1.2">
-    AVI <tspan fill="#0284c7">CONSULTANCY</tspan>
+  <text x="88" y="38" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-size="29" font-weight="900" fill="#0b192c" letter-spacing="2">
+    AVI <tspan fill="#1d4ed8" font-weight="800">CONSULTANCY</tspan>
   </text>
 
-  <!-- Pill Tagline Badge -->
-  <rect x="96" y="55" width="375" height="24" rx="6" fill="#f0fdf4" stroke="#86efac" stroke-width="1.2"/>
-  
-  <!-- Active Pulse Icon -->
-  <circle cx="110" cy="67" r="4" fill="#059669"/>
-  <circle cx="110" cy="67" r="6.5" fill="#059669" opacity="0.25"/>
+  <!-- Elegant Gold Divider Line -->
+  <line x1="88" y1="47" x2="136" y2="47" stroke="url(#goldEdge)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="142" y1="47" x2="465" y2="47" stroke="#e2e8f0" stroke-width="1"/>
 
-  <!-- Subtitle Text -->
-  <text x="124" y="71" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-size="11.5" font-weight="800" fill="#065f46" letter-spacing="1.5">
-    HUMAN RESOURCES &#8226; RECRUITMENT &#8226; PLACEMENT
+  <!-- Corporate Tagline -->
+  <text x="88" y="64" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-size="9.5" font-weight="700" fill="#64748b" letter-spacing="2.8">
+    EXECUTIVE RECRUITMENT &#38; MANAGEMENT SOLUTIONS
   </text>
 </svg>
