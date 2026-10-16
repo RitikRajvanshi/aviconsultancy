@@ -1,32 +1,36 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
   <defs>
-    <linearGradient id="favNavy" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0b192c"/>
-      <stop offset="100%" stop-color="#1e3a8a"/>
-    </linearGradient>
-    <linearGradient id="favBlue" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#2563eb"/>
-      <stop offset="100%" stop-color="#38bdf8"/>
-    </linearGradient>
-    <linearGradient id="favGold" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f59e0b"/>
-      <stop offset="100%" stop-color="#fbbf24"/>
+    <linearGradient id="favBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f8fafc"/>
     </linearGradient>
   </defs>
+  <!-- Background Badge -->
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#favBg)" stroke="#cbd5e1" stroke-width="1.5"/>
 
-  <!-- Premium Dark Rounded Squircle -->
-  <rect x="2" y="2" width="60" height="60" rx="14" fill="#0b192c" stroke="#1e3a8a" stroke-width="1.5"/>
+  <!-- Left Blue Sun Rays -->
+  <path d="M 12 30 L 6 28 L 13 33 Z" fill="#1b4b79"/>
+  <path d="M 14 24 L 8 18 L 17 26 Z" fill="#1b4b79"/>
+  <path d="M 19 18 L 16 9 L 23 21 Z" fill="#1b4b79"/>
+  <path d="M 26 14 L 27 4 L 29 18 Z" fill="#1b4b79"/>
 
-  <!-- Letter A Left Beam -->
-  <polygon points="30,10 13,52 20,52 34,20" fill="#ffffff"/>
+  <!-- Right Gold Sun Rays -->
+  <path d="M 35 14 L 37 4 L 38 18 Z" fill="#e5a823"/>
+  <path d="M 42 18 L 48 9 L 43 21 Z" fill="#e5a823"/>
+  <path d="M 47 24 L 56 18 L 48 27 Z" fill="#e5a823"/>
+  <path d="M 49 30 L 58 29 L 49 34 Z" fill="#e5a823"/>
 
-  <!-- Letter A Crossbar -->
-  <polygon points="19,39 33,39 31,44 18,44" fill="#ffffff"/>
+  <!-- Center Dome & Arch (Left Blue, Right Gold) -->
+  <path d="M 16 36 C 16 24, 32 21, 32 21 L 32 25 C 32 25, 20 28, 20 36 Z" fill="#1b4b79"/>
+  <path d="M 32 21 C 32 21, 48 24, 48 36 L 44 36 C 44 28, 32 25, 32 25 Z" fill="#e5a823"/>
 
-  <!-- Letter V Interlocking Right Beam -->
-  <polygon points="30,10 34,20 25,40 36,54 42,42 32,22" fill="url(#favBlue)"/>
-  <polygon points="36,54 51,19 44,19 32,44" fill="url(#favBlue)"/>
+  <!-- Central "A" Arch (Left Blue, Right Gold) -->
+  <path d="M 32 24 L 22 45 L 27 45 L 32 33 Z" fill="#1b4b79"/>
+  <path d="M 32 24 L 32 33 L 37 45 L 42 45 Z" fill="#e5a823"/>
 
-  <!-- Gold Accent Pinstripe -->
-  <path d="M 30 18 L 36 50 L 47 21" stroke="url(#favGold)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Ascending Blue Career Arrow Shooting to Top-Right -->
+  <path d="M 18 41 C 24 36, 38 29, 46 20 L 44 17 L 54 16 L 52 26 L 49 23 C 41 32, 27 39, 18 41 Z" fill="#1b4b79"/>
+
+  <!-- Bottom AVI in Blue -->
+  <text x="32" y="55" font-family="'Plus Jakarta Sans', sans-serif" font-size="9" font-weight="900" fill="#1b4b79" text-anchor="middle" letter-spacing="1">AVI</text>
 </svg>
