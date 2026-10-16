@@ -1,66 +1,63 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 84" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 92" fill="none">
   <defs>
-    <!-- Executive Gradients -->
-    <linearGradient id="navyFacet" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0b192c"/>
-      <stop offset="60%" stop-color="#1e3a8a"/>
-      <stop offset="100%" stop-color="#172554"/>
+    <!-- Corporate Metallic Gradients -->
+    <linearGradient id="aviBlueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e4e82"/>
+      <stop offset="50%" stop-color="#143a64"/>
+      <stop offset="100%" stop-color="#0d2644"/>
     </linearGradient>
-    <linearGradient id="cobaltFacet" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1d4ed8"/>
-      <stop offset="50%" stop-color="#2563eb"/>
-      <stop offset="100%" stop-color="#1e40af"/>
+
+    <linearGradient id="aviGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f7c858"/>
+      <stop offset="50%" stop-color="#d99c27"/>
+      <stop offset="100%" stop-color="#b87b14"/>
     </linearGradient>
-    <linearGradient id="goldEdge" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f59e0b"/>
-      <stop offset="50%" stop-color="#fbbf24"/>
-      <stop offset="100%" stop-color="#d97706"/>
+
+    <linearGradient id="aviArrowGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#13477e"/>
+      <stop offset="50%" stop-color="#1e68ad"/>
+      <stop offset="100%" stop-color="#348ee0"/>
     </linearGradient>
-    <linearGradient id="shadowFacet" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#030712"/>
-      <stop offset="100%" stop-color="#0f172a"/>
-    </linearGradient>
-    <filter id="execDepth" x="-10%" y="-10%" width="120%" height="120%" filterUnits="userSpaceOnUse">
-      <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#0b192c" flood-opacity="0.18"/>
+
+    <!-- Subtle 3D Depth Shadow -->
+    <filter id="aviSoftShadow" x="-15%" y="-15%" width="130%" height="130%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="1" dy="2" stdDeviation="1.5" flood-color="#0a192f" flood-opacity="0.25"/>
     </filter>
   </defs>
 
-  <!-- ================= ARCHITECTURAL "AV" MONOGRAM ================= -->
-  <g transform="translate(6, 6)" filter="url(#execDepth)">
-    <!-- Letter A: Left Main Beam -->
-    <polygon points="36,4 10,64 21,64 42,18" fill="url(#navyFacet)"/>
+  <!-- ================= EMBLEM ================= -->
+  <g transform="translate(4, 2)" filter="url(#aviSoftShadow)">
+    <!-- Sunburst Crown: 4 Left Navy Rays -->
+    <polygon points="12,50 24,47 23,52" fill="url(#aviBlueGrad)"/>
+    <polygon points="16,36 28,40 26,45" fill="url(#aviBlueGrad)"/>
+    <polygon points="25,24 35,33 32,37" fill="url(#aviBlueGrad)"/>
+    <polygon points="38,15 44,28 40,30" fill="url(#aviBlueGrad)"/>
 
-    <!-- Letter A: Bottom Left 3D Bevel Foot -->
-    <polygon points="10,64 21,64 27,50 18,50" fill="url(#shadowFacet)" opacity="0.85"/>
+    <!-- Sunburst Crown: 4 Right Gold Rays -->
+    <polygon points="56,15 54,28 58,30" fill="url(#aviGoldGrad)"/>
+    <polygon points="69,24 59,33 62,37" fill="url(#aviGoldGrad)"/>
+    <polygon points="78,36 66,40 68,45" fill="url(#aviGoldGrad)"/>
+    <polygon points="82,50 70,47 71,52" fill="url(#aviGoldGrad)"/>
 
-    <!-- Letter A: Horizontal Tie Bar -->
-    <polygon points="21,46 41,46 38,53 19,53" fill="url(#navyFacet)"/>
+    <!-- Central Arch / Dome (Left Navy, Right Gold) -->
+    <path d="M 28 62 C 28 39, 47 33, 47 33 L 47 39 C 47 39, 34 44, 34 62 Z" fill="url(#aviBlueGrad)"/>
+    <path d="M 47 33 C 47 33, 66 39, 66 62 L 60 62 C 60 44, 47 39, 47 39 Z" fill="url(#aviGoldGrad)"/>
 
-    <!-- Letter V: Interlocking Left Beam (Passing under A's apex) -->
-    <polygon points="36,4 42,18 29,48 44,74 52,58 39,32" fill="url(#cobaltFacet)"/>
+    <!-- Central Stylized "A" (Left Navy, Right Gold) -->
+    <polygon points="47,35 36,70 42,70 47,51" fill="url(#aviBlueGrad)"/>
+    <polygon points="47,35 47,51 52,70 58,70" fill="url(#aviGoldGrad)"/>
 
-    <!-- Letter V: Right Ascending Beam -->
-    <polygon points="44,74 66,22 56,22 39,60" fill="url(#cobaltFacet)"/>
-
-    <!-- Letter V: Right Top Head Cap -->
-    <polygon points="56,22 66,22 72,22 62,22" fill="#1e3a8a"/>
-
-    <!-- Precision Metallic Gold Pinstripe Chamfer -->
-    <path d="M 37 20 L 44 68 L 60 26" stroke="url(#goldEdge)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Ascending Career Arrow Shooting Up-Right -->
+    <path d="M 22 64 C 32 57, 50 45, 72 31 L 70 27 L 88 25 L 83 42 L 78 38 C 58 50, 40 61, 22 64 Z" fill="url(#aviArrowGrad)"/>
   </g>
 
-  <!-- ================= EXECUTIVE WORDMARK ================= -->
-  <!-- "AVI CONSULTANCY" -->
-  <text x="86" y="38" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-size="28" font-weight="900" fill="#0b192c" letter-spacing="1.5">
-    AVI <tspan fill="#1d4ed8" font-weight="800">CONSULTANCY</tspan>
-  </text>
+  <!-- ================= BRAND WORDMARK & MOTTO ================= -->
+  <!-- "AVI" in Bold Navy -->
+  <text x="106" y="46" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-weight="900" font-size="34" fill="#143a64" letter-spacing="2">AVI</text>
 
-  <!-- Elegant Gold Divider Line with Ample Safety Margin -->
-  <line x1="86" y1="46" x2="134" y2="46" stroke="url(#goldEdge)" stroke-width="2" stroke-linecap="round"/>
-  <line x1="140" y1="46" x2="435" y2="46" stroke="#cbd5e1" stroke-width="1"/>
+  <!-- "CONSULTANCY" in Bold Metallic Gold -->
+  <text x="180" y="46" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-weight="800" font-size="28" fill="#d99c27" letter-spacing="1.5">CONSULTANCY</text>
 
-  <!-- Corporate Tagline with Generous Right Margin -->
-  <text x="86" y="62" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-size="9" font-weight="700" fill="#64748b" letter-spacing="1.4">
-    EXECUTIVE RECRUITMENT &#38; MANAGEMENT SOLUTIONS
-  </text>
+  <!-- Company Motto in Clean Slate -->
+  <text x="108" y="70" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-weight="700" font-size="12" fill="#1e293b" letter-spacing="0.8">Empowering Careers, Fostering Growth</text>
 </svg>
