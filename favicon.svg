@@ -19,7 +19,7 @@
   <!-- Golden Handshake / Connection Arch -->
   <path d="M19 43 C24 39, 36 39, 41 43" stroke="url(#favStar)" stroke-width="3" stroke-linecap="round"/>
 
-  <!-- Left Figure (Candidate) & Right Figure (Employer) -->
+  <!-- Left Figure (Candidate) and Right Figure (Employer) -->
   <circle cx="21" cy="29" r="3" fill="#38bdf8"/>
   <circle cx="39" cy="29" r="3" fill="#34d399"/>
 
