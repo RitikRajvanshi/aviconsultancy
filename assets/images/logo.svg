@@ -51,16 +51,16 @@
 
   <!-- ================= EXECUTIVE WORDMARK ================= -->
   <!-- "AVI CONSULTANCY" -->
-  <text x="88" y="38" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-size="29" font-weight="900" fill="#0b192c" letter-spacing="2">
+  <text x="86" y="38" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-size="28" font-weight="900" fill="#0b192c" letter-spacing="1.5">
     AVI <tspan fill="#1d4ed8" font-weight="800">CONSULTANCY</tspan>
   </text>
 
-  <!-- Elegant Gold Divider Line -->
-  <line x1="88" y1="47" x2="136" y2="47" stroke="url(#goldEdge)" stroke-width="2" stroke-linecap="round"/>
-  <line x1="142" y1="47" x2="465" y2="47" stroke="#e2e8f0" stroke-width="1"/>
+  <!-- Elegant Gold Divider Line with Ample Safety Margin -->
+  <line x1="86" y1="46" x2="134" y2="46" stroke="url(#goldEdge)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="140" y1="46" x2="435" y2="46" stroke="#cbd5e1" stroke-width="1"/>
 
-  <!-- Corporate Tagline -->
-  <text x="88" y="64" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-size="9.5" font-weight="700" fill="#64748b" letter-spacing="2.8">
+  <!-- Corporate Tagline with Generous Right Margin -->
+  <text x="86" y="62" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-size="9" font-weight="700" fill="#64748b" letter-spacing="1.4">
     EXECUTIVE RECRUITMENT &#38; MANAGEMENT SOLUTIONS
   </text>
 </svg>
