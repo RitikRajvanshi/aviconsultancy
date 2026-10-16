@@ -1,11 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
   <defs>
     <linearGradient id="favGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#0369a1"/>
+      <stop offset="0%" stop-color="#032047"/>
+      <stop offset="50%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+    <linearGradient id="favStar" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
     </linearGradient>
   </defs>
-  <ellipse cx="32" cy="32" rx="30" ry="26" fill="url(#favGrad)" stroke="#38bdf8" stroke-width="2"/>
-  <path d="M20 44 L32 18 L44 44 M24 36 L40 36" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="32" cy="14" r="3" fill="#facc15"/>
+  <!-- Rounded Squircle Badge -->
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#favGrad)" stroke="#38bdf8" stroke-width="1.5"/>
+  
+  <!-- Main Arch A -->
+  <path d="M30 16 L16 52 L23 52 L30 33 L37 52 L44 52 Z" fill="#ffffff"/>
+  
+  <!-- Golden Handshake / Connection Arch -->
+  <path d="M19 43 C24 39, 36 39, 41 43" stroke="url(#favStar)" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Left Figure (Candidate) & Right Figure (Employer) -->
+  <circle cx="21" cy="29" r="3" fill="#38bdf8"/>
+  <circle cx="39" cy="29" r="3" fill="#34d399"/>
+
+  <!-- Placement Star at Apex -->
+  <polygon points="30,7 32,12 37,13.5 32,15 30,20 28,15 23,13.5 28,12" fill="url(#favStar)"/>
 </svg>

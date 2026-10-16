@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 92" fill="none">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="wLeftGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="60%" stop-color="#0ea5e9"/>
+      <stop offset="100%" stop-color="#34d399"/>
+    </linearGradient>
+    <linearGradient id="wRightGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+    <linearGradient id="wStarGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ================= EMBLEM ================= -->
+  <g transform="translate(6, 4)">
+    <!-- Main Arch of Letter A (Left Leg) -->
+    <path d="M42 16 C30 26, 12 56, 8 76 C16 75, 23 70, 26 62 C29 54, 35 34, 42 16 Z" fill="url(#wLeftGrad)"/>
+    
+    <!-- Main Arch of Letter A (Right Leg) -->
+    <path d="M42 16 C48 30, 60 58, 68 76 C60 76, 52 70, 48 62 C45 56, 42 36, 42 16 Z" fill="url(#wRightGrad)"/>
+
+    <!-- Left Human Figure (Candidate) -->
+    <circle cx="27" cy="38" r="6.5" fill="#38bdf8"/>
+    <path d="M19 55 C19 46, 27 46, 32 50 C29 55, 24 57, 19 55 Z" fill="#0ea5e9"/>
+
+    <!-- Right Human Figure (Employer) -->
+    <circle cx="49" cy="40" r="6.5" fill="#34d399"/>
+    <path d="M44 51 C48 46, 56 46, 57 55 C52 57, 47 55, 44 51 Z" fill="#10b981"/>
+
+    <!-- The Handshake / Union Crossbar -->
+    <path d="M26 52 C32 46, 42 46, 48 52 C44 56, 32 57, 26 52 Z" fill="#fbbf24"/>
+    <circle cx="37" cy="51" r="2.5" fill="#ffffff"/>
+
+    <!-- Upward Career Growth Arrow -->
+    <path d="M46 56 L62 27 L56 26 L67 15 L73 28 L67 27 L52 58 Z" fill="url(#wRightGrad)"/>
+    
+    <!-- 3D Golden Placement Star -->
+    <g transform="translate(67, 13)">
+      <polygon points="0,-12 3.5,-3.5 12,0 3.5,3.5 0,12 -3.5,3.5 -12,0 -3.5,-3.5" fill="url(#wStarGold)"/>
+      <circle cx="0" cy="0" r="2" fill="#ffffff"/>
+    </g>
+  </g>
+
+  <!-- ================= TYPOGRAPHY ================= -->
+  <!-- "AVI CONSULTANCY" -->
+  <text x="96" y="44" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-size="34" font-weight="900" fill="#ffffff" letter-spacing="1.2">
+    AVI <tspan fill="#38bdf8">CONSULTANCY</tspan>
+  </text>
+
+  <!-- Pill Tagline Badge -->
+  <rect x="96" y="55" width="375" height="24" rx="6" fill="rgba(255, 255, 255, 0.08)" stroke="rgba(56, 189, 248, 0.4)" stroke-width="1.2"/>
+  
+  <!-- Active Pulse Icon -->
+  <circle cx="110" cy="67" r="4" fill="#34d399"/>
+  <circle cx="110" cy="67" r="6.5" fill="#34d399" opacity="0.3"/>
+
+  <!-- Subtitle Text -->
+  <text x="124" y="71" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-size="11.5" font-weight="700" fill="#bae6fd" letter-spacing="1.5">
+    HUMAN RESOURCES &bull; RECRUITMENT &bull; PLACEMENT
+  </text>
+</svg>
