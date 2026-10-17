@@ -1577,27 +1577,27 @@
         <button class="modal-close-btn">&times;</button>
       </div>
       <div class="modal-body">
-        <form id="candidate_apply_form">
+        <form id="candidate_apply_form" enctype="multipart/form-data">
           <div class="form-group" style="margin-bottom: 1rem;">
             <label class="form-label" for="cand_name">Full Name <span class="req">*</span></label>
-            <input type="text" id="cand_name" class="form-input" placeholder="e.g. Amit Kumar" required>
+            <input type="text" id="cand_name" name="name" class="form-input" placeholder="e.g. Amit Kumar" required>
           </div>
 
           <div class="form-grid-2col" style="margin-bottom: 1rem;">
             <div class="form-group">
               <label class="form-label" for="cand_phone">Mobile Number <span class="req">*</span></label>
-              <input type="tel" id="cand_phone" class="form-input" placeholder="e.g. 9876543210" required>
+              <input type="tel" id="cand_phone" name="phone" class="form-input" placeholder="e.g. 9876543210" required>
             </div>
             <div class="form-group">
               <label class="form-label" for="cand_email">Email Address <span class="req">*</span></label>
-              <input type="email" id="cand_email" class="form-input" placeholder="e.g. amit@gmail.com" required>
+              <input type="email" id="cand_email" name="email" class="form-input" placeholder="e.g. amit@gmail.com" required>
             </div>
           </div>
 
           <div class="form-grid-2col" style="margin-bottom: 1rem;">
             <div class="form-group">
               <label class="form-label" for="cand_exp">Total Experience</label>
-              <select id="cand_exp" class="form-select">
+              <select id="cand_exp" name="experience" class="form-select">
                 <option value="Fresher">Fresher (0 Years)</option>
                 <option value="1-3 Years">1 - 3 Years</option>
                 <option value="3-6 Years">3 - 6 Years</option>
@@ -1607,7 +1607,7 @@
             </div>
             <div class="form-group">
               <label class="form-label" for="cand_field">Functional Domain <span class="req">*</span></label>
-              <select id="cand_field" class="form-select" required>
+              <select id="cand_field" name="domain" class="form-select" required>
                 <option value="Medical, Doctors & Healthcare">&#9733; Medical, Doctors &amp; Healthcare (Speciality)</option>
                 <option value="Chartered Accountant (CA)">Chartered Accountant (CA)</option>
                 <option value="Accounts, GST & Taxation">Accounts, GST &amp; Taxation</option>
@@ -1624,17 +1624,17 @@
           <div class="form-grid-2col" style="margin-bottom: 1.25rem;">
             <div class="form-group">
               <label class="form-label" for="cand_ctc">Current CTC (Per Annum)</label>
-              <input type="text" id="cand_ctc" class="form-input" placeholder="e.g. ₹5,50,000">
+              <input type="text" id="cand_ctc" name="current_ctc" class="form-input" placeholder="e.g. ₹5,50,000">
             </div>
             <div class="form-group">
               <label class="form-label" for="cand_location">Preferred Location</label>
-              <input type="text" id="cand_location" class="form-input" placeholder="e.g. Lucknow / Delhi NCR / Pan India">
+              <input type="text" id="cand_location" name="preferred_location" class="form-input" placeholder="e.g. Lucknow / Delhi NCR / Pan India">
             </div>
           </div>
 
           <div class="form-group" style="margin-bottom: 1.5rem;">
             <label class="form-label" for="cand_resume_file">Upload Resume (PDF/DOCX) <span class="req">*</span></label>
-            <input type="file" id="cand_resume_file" class="form-input" accept=".pdf,.doc,.docx" required>
+            <input type="file" id="cand_resume_file" name="attachment" class="form-input" accept=".pdf,.doc,.docx" required>
             <small style="color: #64748b; font-size: 0.8rem; margin-top: 0.2rem;">Max file size: 5MB. Verified confidentially by Avi Consultancy.</small>
           </div>
 
@@ -1765,6 +1765,6 @@
   </a>
 
   <!-- Main JavaScript File -->
-  <script src="js/main.js?v=32"></script>
+  <script src="js/main.js?v=34"></script>
 </body>
 </html>

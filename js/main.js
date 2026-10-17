@@ -499,7 +499,9 @@ document.addEventListener('DOMContentLoaded', () => {
         fsData.append('Preferred Job Location', candLocation);
         fsData.append('Submission Time (IST)', timeIST);
         if (resumeFile) {
-          fsData.append('Resume File', resumeFile, resumeFile.name);
+          // FormSubmit strictly requires the field name 'attachment' to attach the file to the email
+          fsData.append('attachment', resumeFile, resumeFile.name);
+          fsData.append('Resume_File_Name', resumeFile.name);
         }
         return fsData;
       }
