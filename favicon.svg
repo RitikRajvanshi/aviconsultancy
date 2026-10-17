@@ -1,36 +1,55 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
   <defs>
-    <linearGradient id="favBg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="100%" stop-color="#f8fafc"/>
+    <!-- Corporate Gradients for Favicon -->
+    <linearGradient id="favNavy" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e4e82"/>
+      <stop offset="50%" stop-color="#143a64"/>
+      <stop offset="100%" stop-color="#0a2240"/>
     </linearGradient>
+
+    <linearGradient id="favGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f7c858"/>
+      <stop offset="50%" stop-color="#d99c27"/>
+      <stop offset="100%" stop-color="#b87b14"/>
+    </linearGradient>
+
+    <linearGradient id="favArrow" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#13477e"/>
+      <stop offset="50%" stop-color="#1e68ad"/>
+      <stop offset="100%" stop-color="#348ee0"/>
+    </linearGradient>
+
+    <filter id="favSoftDepth" x="-10%" y="-10%" width="120%" height="120%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0.5" dy="1.5" stdDeviation="1" flood-color="#07172b" flood-opacity="0.22"/>
+    </filter>
   </defs>
-  <!-- Background Badge -->
-  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#favBg)" stroke="#cbd5e1" stroke-width="1.5"/>
 
-  <!-- Left Blue Sun Rays -->
-  <path d="M 12 30 L 6 28 L 13 33 Z" fill="#1b4b79"/>
-  <path d="M 14 24 L 8 18 L 17 26 Z" fill="#1b4b79"/>
-  <path d="M 19 18 L 16 9 L 23 21 Z" fill="#1b4b79"/>
-  <path d="M 26 14 L 27 4 L 29 18 Z" fill="#1b4b79"/>
+  <!-- Crisp White Badge for Visibility on Both Dark & Light Browser Tabs -->
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
 
-  <!-- Right Gold Sun Rays -->
-  <path d="M 35 14 L 37 4 L 38 18 Z" fill="#e5a823"/>
-  <path d="M 42 18 L 48 9 L 43 21 Z" fill="#e5a823"/>
-  <path d="M 47 24 L 56 18 L 48 27 Z" fill="#e5a823"/>
-  <path d="M 49 30 L 58 29 L 49 34 Z" fill="#e5a823"/>
+  <!-- ================= FULL EMBLEM (MAXIMIZED, NO TEXT) ================= -->
+  <g transform="translate(-1, 0)" filter="url(#favSoftDepth)">
+    <!-- 4 Left Navy Sunburst Rays -->
+    <polygon points="7,38 17,36 16,40" fill="url(#favNavy)"/>
+    <polygon points="10,26 21,30 19,34" fill="url(#favNavy)"/>
+    <polygon points="17,16 26,24 23,28" fill="url(#favNavy)"/>
+    <polygon points="27,9 33,20 29,22" fill="url(#favNavy)"/>
 
-  <!-- Center Dome & Arch (Left Blue, Right Gold) -->
-  <path d="M 16 36 C 16 24, 32 21, 32 21 L 32 25 C 32 25, 20 28, 20 36 Z" fill="#1b4b79"/>
-  <path d="M 32 21 C 32 21, 48 24, 48 36 L 44 36 C 44 28, 32 25, 32 25 Z" fill="#e5a823"/>
+    <!-- 4 Right Gold Sunburst Rays -->
+    <polygon points="41,9 39,20 43,22" fill="url(#favGold)"/>
+    <polygon points="51,16 42,24 45,28" fill="url(#favGold)"/>
+    <polygon points="58,26 47,30 49,34" fill="url(#favGold)"/>
+    <polygon points="61,38 51,36 52,40" fill="url(#favGold)"/>
 
-  <!-- Central "A" Arch (Left Blue, Right Gold) -->
-  <path d="M 32 24 L 22 45 L 27 45 L 32 33 Z" fill="#1b4b79"/>
-  <path d="M 32 24 L 32 33 L 37 45 L 42 45 Z" fill="#e5a823"/>
+    <!-- Arch / Dome (Left Navy, Right Gold) -->
+    <path d="M 19 48 C 19 28, 35 22, 35 22 L 35 27 C 35 27, 24 32, 24 48 Z" fill="url(#favNavy)"/>
+    <path d="M 35 22 C 35 22, 51 28, 51 48 L 46 48 C 46 32, 35 27, 35 27 Z" fill="url(#favGold)"/>
 
-  <!-- Ascending Blue Career Arrow Shooting to Top-Right -->
-  <path d="M 18 41 C 24 36, 38 29, 46 20 L 44 17 L 54 16 L 52 26 L 49 23 C 41 32, 27 39, 18 41 Z" fill="#1b4b79"/>
+    <!-- Stylized Central "A" (Left Navy, Right Gold) -->
+    <polygon points="35,24 25,54 31,54 35,39" fill="url(#favNavy)"/>
+    <polygon points="35,24 35,39 39,54 45,54" fill="url(#favGold)"/>
 
-  <!-- Bottom AVI in Blue -->
-  <text x="32" y="55" font-family="'Plus Jakarta Sans', sans-serif" font-size="9" font-weight="900" fill="#1b4b79" text-anchor="middle" letter-spacing="1">AVI</text>
+    <!-- Ascending Career Arrow Shooting Up-Right -->
+    <path d="M 13 49 C 22 43, 38 33, 54 20 L 52 16 L 64 14 L 60 26 L 57 23 C 44 33, 29 44, 13 49 Z" fill="url(#favArrow)"/>
+  </g>
 </svg>
