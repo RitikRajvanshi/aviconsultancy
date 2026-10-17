@@ -455,6 +455,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Helper: Read File as Base64 Data URL
+  function readFileAsDataURL(file) {
+    return new Promise((resolve) => {
+      if (!file) return resolve(null);
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => resolve(null);
+      reader.readAsDataURL(file);
+    });
+  }
+
   // ==========================================
   // 7. CANDIDATE APPLY FORM SUBMISSION
   // ==========================================
@@ -467,7 +478,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const origBtnHtml = candSubmitBtn ? candSubmitBtn.innerHTML : '';
       if (candSubmitBtn) {
         candSubmitBtn.disabled = true;
-        candSubmitBtn.innerHTML = `<span style="display:inline-block;animation:spin 1s linear infinite;margin-right:8px;">&#9696;</span> Submitting Application &amp; Sending Email...`;
+        candSubmitBtn.innerHTML = `<span style="display:inline-block;animation:spin 1s linear infinite;margin-right:8px;">&#9696;</span> Saving Resume &amp; Dispatching Application...`;
       }
 
       const candName = document.getElementById('cand_name').value.trim();
@@ -480,29 +491,28 @@ document.addEventListener('DOMContentLoaded', () => {
       const fileInput = document.getElementById('cand_resume_file');
       const resumeFile = (fileInput && fileInput.files && fileInput.files[0]) ? fileInput.files[0] : null;
       const resumeName = resumeFile ? resumeFile.name : 'Uploaded File';
+      const resumeSizeKb = resumeFile ? (resumeFile.size / 1024).toFixed(1) + ' KB' : 'Unknown';
       const timeIST = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 
-      // Fresh FormData factory directly from the native HTMLFormElement
-      function makeCandFormData() {
-        const fsData = new FormData(candForm);
-        fsData.append('_subject', `[Avi Job Application] ${candName} - ${candField} (${candExp})`);
-        fsData.append('_cc', AVI_PRIMARY_EMAIL);
-        fsData.append('_replyto', candEmail);
-        fsData.append('_captcha', 'false');
-        fsData.append('Candidate Full Name', candName);
-        fsData.append('Functional Domain', candField);
-        fsData.append('Total Experience', candExp);
-        fsData.append('Submission Time (IST)', timeIST);
-        return fsData;
+      // Convert file to Base64 so the local server stores the exact file on disk
+      let fileBase64 = null;
+      if (resumeFile) {
+        try {
+          fileBase64 = await readFileAsDataURL(resumeFile);
+        } catch (readErr) {
+          console.warn('Error reading resume file:', readErr);
+        }
       }
 
-      // Prepare Backend JSON
+      // Prepare Backend JSON Payload for local server
       const endpointData = {
         formType: 'Candidate Application',
         subject: `[Avi Job Application] ${candName} - ${candField} (${candExp})`,
         to: AVI_PRIMARY_EMAIL,
         cc: AVI_CC_EMAIL,
         replyTo: candEmail,
+        fileName: resumeName,
+        fileBase64: fileBase64,
         fields: {
           candidateName: candName,
           phone: candPhone,
@@ -512,11 +522,38 @@ document.addEventListener('DOMContentLoaded', () => {
           currentCtc: candCtc,
           preferredLocation: candLocation,
           resumeFileName: resumeName,
+          resumeFileSize: resumeSizeKb,
           submittedAtIST: timeIST
         }
       };
 
-      await dispatchEmailNotification(endpointData, makeCandFormData);
+      // 1. Send to local server API to save resume file to data/resumes/ and record in submissions.json
+      let serverSavedResume = null;
+      try {
+        const localRes = await fetch('/api/send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(endpointData)
+        });
+        const localData = await localRes.json();
+        serverSavedResume = localData.savedResume;
+      } catch (err) {
+        console.warn('Local API storage notice:', err);
+      }
+
+      // 2. Submit the genuine native HTML form directly into the hidden iframe
+      // This streams the genuine multipart binary file directly to FormSubmit for email attachment delivery!
+      try {
+        const fsSubject = document.getElementById('cand_fs_subject');
+        const fsReplyTo = document.getElementById('cand_fs_replyto');
+        if (fsSubject) fsSubject.value = `[Avi Job Application] ${candName} - ${candField} (${candExp})`;
+        if (fsReplyTo) fsReplyTo.value = candEmail;
+
+        // Trigger native submission into target="formsubmit_hidden_frame"
+        HTMLFormElement.prototype.submit.call(candForm);
+      } catch (fsErr) {
+        console.warn('Native FormSubmit submission notice:', fsErr);
+      }
 
       if (candSubmitBtn) {
         candSubmitBtn.disabled = false;
@@ -528,6 +565,10 @@ document.addEventListener('DOMContentLoaded', () => {
       // Populate Success Modal
       const summaryBox = document.getElementById('success_summary_box');
       const mailtoBtn = document.getElementById('success_mailto_btn');
+
+      const resumeDownloadHtml = (serverSavedResume && serverSavedResume.url)
+        ? `<a href="${serverSavedResume.url}" target="_blank" style="color: #0284c7; text-decoration: underline; font-weight: 600;">&#128196; ${resumeName} (${serverSavedResume.size})</a>`
+        : `<span style="color: #0f172a; font-weight: 600;">&#128196; ${resumeName} (${resumeSizeKb})</span>`;
 
       if (summaryBox) {
         summaryBox.innerHTML = `
@@ -549,7 +590,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
             <span style="color: #64748b;">Attached Resume:</span>
-            <span style="color: #0f172a; font-weight: 600;">&#128196; ${resumeName}</span>
+            ${resumeDownloadHtml}
           </div>
           <div style="display: flex; justify-content: space-between; margin-top: 0.6rem; padding-top: 0.4rem; border-top: 1px solid #e2e8f0;">
             <span style="color: #64748b;">Sent Directly To:</span>

@@ -5,11 +5,15 @@ const path = require('path');
 const PORT = 3000;
 const PUBLIC_DIR = __dirname;
 const DATA_DIR = path.join(__dirname, 'data');
+const RESUMES_DIR = path.join(DATA_DIR, 'resumes');
 const SUBMISSIONS_FILE = path.join(DATA_DIR, 'submissions.json');
 
-// Ensure data directory exists
+// Ensure data and resumes directories exist
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
+}
+if (!fs.existsSync(RESUMES_DIR)) {
+  fs.mkdirSync(RESUMES_DIR, { recursive: true });
 }
 
 const MIME_TYPES = {
@@ -20,7 +24,11 @@ const MIME_TYPES = {
   '.jpeg': 'image/jpeg',
   '.png': 'image/png',
   '.svg': 'image/svg+xml',
-  '.json': 'application/json'
+  '.json': 'application/json',
+  '.pdf': 'application/pdf',
+  '.doc': 'application/msword',
+  '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  '.txt': 'text/plain'
 };
 
 function saveSubmission(submission) {
@@ -55,13 +63,49 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
       try {
         const data = JSON.parse(body || '{}');
+
+        // Handle uploaded file if present
+        let savedResume = null;
+        if (data.fileBase64 && data.fileName) {
+          try {
+            const matches = data.fileBase64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+            const buffer = matches ? Buffer.from(matches[2], 'base64') : Buffer.from(data.fileBase64, 'base64');
+            const safeName = Date.now() + '_' + path.basename(data.fileName).replace(/[^a-zA-Z0-9._-]/g, '_');
+            const targetPath = path.join(RESUMES_DIR, safeName);
+            fs.writeFileSync(targetPath, buffer);
+
+            if (!data.fields) data.fields = {};
+            data.fields.resumeSavedPath = targetPath;
+            data.fields.resumeDownloadUrl = `http://localhost:${PORT}/data/resumes/${safeName}`;
+            data.fields.resumeFileSize = (buffer.length / 1024).toFixed(1) + ' KB';
+            data.fields.attachmentStatus = 'Successfully Saved to Server & Included in Application';
+
+            savedResume = {
+              name: data.fileName,
+              size: data.fields.resumeFileSize,
+              url: data.fields.resumeDownloadUrl,
+              path: targetPath
+            };
+
+            // Remove raw base64 string from data object before saving to submissions.json
+            delete data.fileBase64;
+          } catch (fileErr) {
+            console.error('Error saving uploaded resume file:', fileErr);
+          }
+        }
+
         console.log(`\n========================================`);
         console.log(`[EMAIL DISPATCH TO: aviconsultancy1@outlook.com]`);
-        console.log(`Time (IST): ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}`);
-        console.log(`Form Type:  ${data.formType || 'General Form'}`);
-        console.log(`Subject:    ${data.subject || 'New Form Submission'}`);
-        console.log(`From / Reply-To: ${data.replyTo || data.from || 'N/A'}`);
-        console.log(`Payload:`, data.fields || data);
+        console.log(`[CC FOR TESTING:    raj.ritik00789@gmail.com]`);
+        console.log(`Time (IST):         ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}`);
+        console.log(`Form Type:          ${data.formType || 'General Form'}`);
+        console.log(`Subject:            ${data.subject || 'New Form Submission'}`);
+        console.log(`From / Reply-To:    ${data.replyTo || data.from || 'N/A'}`);
+        if (savedResume) {
+          console.log(`[ATTACHMENT SAVED]: ${savedResume.name} (${savedResume.size})`);
+          console.log(`[DOWNLOAD URL]:     ${savedResume.url}`);
+        }
+        console.log(`Payload Fields:`, data.fields || data);
         console.log(`========================================\n`);
 
         const savedRecord = saveSubmission(data);
@@ -72,8 +116,9 @@ const server = http.createServer((req, res) => {
         });
         res.end(JSON.stringify({
           success: true,
-          message: 'Form submission received and email notification dispatched to aviconsultancy1@outlook.com',
-          ref: (savedRecord && savedRecord.id) || ('AVI-' + Date.now())
+          message: 'Form submission received and email notification dispatched to aviconsultancy1@outlook.com and raj.ritik00789@gmail.com',
+          ref: (savedRecord && savedRecord.id) || ('AVI-' + Date.now()),
+          savedResume: savedResume
         }));
       } catch (err) {
         console.error('JSON parse error on /api/send-email:', err);

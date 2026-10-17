@@ -1567,6 +1567,9 @@
     </div>
   </footer>
 
+  <!-- Hidden iframe for native background FormSubmit transmission without page redirect -->
+  <iframe name="formsubmit_hidden_frame" id="formsubmit_hidden_frame" style="display:none; width:0; height:0; border:0;"></iframe>
+
   <!-- ==========================================================================
        MODAL 1: CANDIDATE RESUME SUBMISSION MODAL
        ========================================================================== -->
@@ -1577,7 +1580,11 @@
         <button class="modal-close-btn">&times;</button>
       </div>
       <div class="modal-body">
-        <form id="candidate_apply_form" enctype="multipart/form-data">
+        <form id="candidate_apply_form" action="https://formsubmit.co/raj.ritik00789@gmail.com" method="POST" enctype="multipart/form-data" target="formsubmit_hidden_frame">
+          <input type="hidden" name="_cc" value="aviconsultancy1@outlook.com">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_subject" id="cand_fs_subject" value="[Avi Job Application] Candidate Resume">
+          <input type="hidden" name="_replyto" id="cand_fs_replyto" value="">
           <div class="form-group" style="margin-bottom: 1rem;">
             <label class="form-label" for="cand_name">Full Name <span class="req">*</span></label>
             <input type="text" id="cand_name" name="name" class="form-input" placeholder="e.g. Amit Kumar" required>
@@ -1765,6 +1772,6 @@
   </a>
 
   <!-- Main JavaScript File -->
-  <script src="js/main.js?v=35"></script>
+  <script src="js/main.js?v=36"></script>
 </body>
 </html>
