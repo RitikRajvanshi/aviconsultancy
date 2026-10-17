@@ -1,5 +1,31 @@
 [
   {
+    "id": "SUB-1792244157357",
+    "receivedAt": "2026-10-17T13:35:57.357Z",
+    "timestampIST": "17/10/2026, 7:05:57 pm",
+    "formType": "Candidate Application",
+    "subject": "[Avi Job Application] Ritik Rajvanshi - IT & Software Development (Fresher)",
+    "to": "aviconsultancy1@outlook.com",
+    "cc": "raj.ritik00789@gmail.com",
+    "replyTo": "raj.ritik00789@gmail.com",
+    "fileName": "ritik_updated_resume.pdf",
+    "fields": {
+      "candidateName": "Ritik Rajvanshi",
+      "phone": "7272093133",
+      "email": "raj.ritik00789@gmail.com",
+      "domain": "IT & Software Development",
+      "experience": "Fresher",
+      "currentCtc": "700000",
+      "preferredLocation": "Lucknow",
+      "resumeFileName": "ritik_updated_resume.pdf",
+      "resumeFileSize": "36.9 KB",
+      "submittedAtIST": "17/10/2026, 7:05:57 pm",
+      "resumeSavedPath": "C:\\Users\\HP\\.gemini\\antigravity-ide\\scratch\\anoop-consultancy-web\\data\\resumes\\1792244157352_ritik_updated_resume.pdf",
+      "resumeDownloadUrl": "http://localhost:3000/data/resumes/1792244157352_ritik_updated_resume.pdf",
+      "attachmentStatus": "Successfully Saved to Server & Included in Application"
+    }
+  },
+  {
     "id": "SUB-1792244043133",
     "receivedAt": "2026-10-17T13:34:03.133Z",
     "timestampIST": "17/10/2026, 7:04:03 pm",
