@@ -482,27 +482,17 @@ document.addEventListener('DOMContentLoaded', () => {
       const resumeName = resumeFile ? resumeFile.name : 'Uploaded File';
       const timeIST = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 
-      // Fresh FormData factory
+      // Fresh FormData factory directly from the native HTMLFormElement
       function makeCandFormData() {
-        const fsData = new FormData();
+        const fsData = new FormData(candForm);
         fsData.append('_subject', `[Avi Job Application] ${candName} - ${candField} (${candExp})`);
         fsData.append('_cc', AVI_PRIMARY_EMAIL);
         fsData.append('_replyto', candEmail);
-        fsData.append('_template', 'table');
         fsData.append('_captcha', 'false');
         fsData.append('Candidate Full Name', candName);
-        fsData.append('Mobile Number', candPhone);
-        fsData.append('Email Address', candEmail);
-        fsData.append('Functional Domain / Speciality', candField);
-        fsData.append('Total Work Experience', candExp);
-        fsData.append('Current Annual CTC', candCtc);
-        fsData.append('Preferred Job Location', candLocation);
+        fsData.append('Functional Domain', candField);
+        fsData.append('Total Experience', candExp);
         fsData.append('Submission Time (IST)', timeIST);
-        if (resumeFile) {
-          // FormSubmit strictly requires the field name 'attachment' to attach the file to the email
-          fsData.append('attachment', resumeFile, resumeFile.name);
-          fsData.append('Resume_File_Name', resumeFile.name);
-        }
         return fsData;
       }
 
