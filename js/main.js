@@ -259,28 +259,192 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Submit Corporate Form
+  // ==========================================
+  // EMAIL DISPATCH CONFIGURATION & LOGIC
+  // ==========================================
+  const AVI_PRIMARY_EMAIL = 'aviconsultancy1@outlook.com';
+  const AVI_CC_EMAIL = 'raj.ritik00789@gmail.com';
+
+  async function dispatchEmailNotification(endpointData, fsData) {
+    // 1. Submit via FormSubmit AJAX (Direct email delivery to primary inbox with CC)
+    try {
+      await fetch(`https://formsubmit.co/ajax/${AVI_PRIMARY_EMAIL}`, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: fsData
+      });
+    } catch (err) {
+      console.warn('FormSubmit primary dispatch notice:', err);
+    }
+
+    // Secondary FormSubmit dispatch to CC address (ensures instant testing delivery)
+    try {
+      await fetch(`https://formsubmit.co/ajax/${AVI_CC_EMAIL}`, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: fsData
+      });
+    } catch (err) {
+      console.warn('FormSubmit CC dispatch notice:', err);
+    }
+
+    // 2. Submit to local server API for persistence in data/submissions.json
+    try {
+      await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(endpointData)
+      });
+    } catch (err) {
+      // Local API is active when running on Node.js dev server
+    }
+  }
+
+  // Success Modal Close Handlers
+  const successModal = document.getElementById('modal_submission_success');
+  const btnCloseSuccess = document.getElementById('btn_close_success_modal');
+  const btnXSuccess = document.getElementById('btn_x_success_modal');
+  if (btnCloseSuccess) btnCloseSuccess.addEventListener('click', () => closeModal(successModal));
+  if (btnXSuccess) btnXSuccess.addEventListener('click', () => closeModal(successModal));
+
+  // ==========================================
+  // 6. CORPORATE AGREEMENT FORM SUBMISSION
+  // ==========================================
+  async function handleCorporateSubmit() {
+    populateAgreementPreview();
+
+    const submitBtn = document.getElementById('btn_submit_agreement');
+    const origBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span style="display:inline-block;animation:spin 1s linear infinite;margin-right:8px;">&#9696;</span> Dispatching Agreement &amp; Sending Email...`;
+    }
+
+    const coName = document.getElementById('co_name').value.trim();
+    const coGst = document.getElementById('co_gst').value.trim() || 'N/A';
+    const coAddress = document.getElementById('co_address').value.trim();
+    const coordName = document.getElementById('client_coord_name').value.trim();
+    const coordEmail = document.getElementById('coord_email').value.trim();
+    const coordContact = document.getElementById('coord_contact').value.trim();
+    const industrySelect = document.getElementById('job_industry_field');
+    const industry = industrySelect ? industrySelect.value : 'Multiple / General';
+    const vacancies = document.getElementById('open_vacancies').value.trim() || 'Not specified';
+    const refCode = document.getElementById('prev_ref').textContent.trim() || `AVI/CORP/${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+    const timeIST = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+    // Prepare FormSubmit FormData (with CC)
+    const fsData = new FormData();
+    fsData.append('_subject', `[Avi Corporate Tie-Up] ${coName} - Agreement Request (${refCode})`);
+    fsData.append('_cc', AVI_CC_EMAIL);
+    fsData.append('_replyto', coordEmail);
+    fsData.append('_template', 'table');
+    fsData.append('_captcha', 'false');
+    fsData.append('Organization Name', coName);
+    fsData.append('Company GSTIN', coGst);
+    fsData.append('Registered Office Address', coAddress);
+    fsData.append('Client Coordinator Name', coordName);
+    fsData.append('Coordinator Email', coordEmail);
+    fsData.append('Coordinator Contact', coordContact);
+    fsData.append('Hiring Industry / Field', industry);
+    fsData.append('Vacancies Count', vacancies);
+    fsData.append('Commercial Terms Agreed', '8.33% CTC Fee | 90-Day Free Replacement Guarantee | 10-15 Day Payment Window');
+    fsData.append('Agreement Reference Number', refCode);
+    fsData.append('Submission Time (IST)', timeIST);
+
+    // Prepare Backend JSON payload
+    const endpointData = {
+      formType: 'Corporate Agreement',
+      subject: `[Avi Corporate Tie-Up] ${coName} - Agreement Request (${refCode})`,
+      to: AVI_PRIMARY_EMAIL,
+      cc: AVI_CC_EMAIL,
+      replyTo: coordEmail,
+      ref: refCode,
+      fields: {
+        company: coName,
+        gst: coGst,
+        address: coAddress,
+        coordinator: coordName,
+        email: coordEmail,
+        contact: coordContact,
+        industry: industry,
+        vacancies: vacancies,
+        terms: '8.33% CTC Fee | 90-Day Free Replacement | 15-Day Payment Window',
+        submittedAtIST: timeIST
+      }
+    };
+
+    await dispatchEmailNotification(endpointData, fsData);
+
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = origBtnHtml;
+    }
+
+    // Populate Success Modal
+    const summaryBox = document.getElementById('success_summary_box');
+    const mailtoBtn = document.getElementById('success_mailto_btn');
+
+    if (summaryBox) {
+      summaryBox.innerHTML = `
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem; border-bottom: 1px dashed #e2e8f0; padding-bottom: 0.4rem;">
+          <span style="color: #64748b;">Ref Code:</span>
+          <strong style="color: #0284c7; font-family: var(--font-mono);">${refCode}</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
+          <span style="color: #64748b;">Organization:</span>
+          <strong style="color: #0f172a;">${coName}</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
+          <span style="color: #64748b;">Coordinator:</span>
+          <span>${coordName} (${coordContact})</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
+          <span style="color: #64748b;">Agreed Terms:</span>
+          <span style="color: #059669; font-weight: 600;">8.33% CTC &bull; 90-Day Replacement</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 0.6rem; padding-top: 0.4rem; border-top: 1px solid #e2e8f0;">
+          <span style="color: #64748b;">Recipients:</span>
+          <span style="color: #059669; font-weight: 700;">${AVI_PRIMARY_EMAIL}<br><small style="color: #64748b; font-weight: 400;">CC: ${AVI_CC_EMAIL}</small></span>
+        </div>
+      `;
+    }
+
+    const mailtoSubject = encodeURIComponent(`[Avi Corporate Tie-Up] ${coName} - Agreement (${refCode})`);
+    const mailtoBody = encodeURIComponent(
+      `Hello Avi Consultancy Team,\n\n` +
+      `We have submitted our Corporate Recruitment Tie-Up details:\n` +
+      `• Agreement Ref: ${refCode}\n` +
+      `• Organization: ${coName}\n` +
+      `• GST: ${coGst}\n` +
+      `• Address: ${coAddress}\n` +
+      `• Coordinator: ${coordName} (${coordContact}, ${coordEmail})\n` +
+      `• Industry / Roles: ${industry}\n` +
+      `• Vacancies: ${vacancies}\n\n` +
+      `Agreed Commercial Terms:\n` +
+      `• 90-Day Free Candidate Replacement Guarantee\n` +
+      `• 8.33% Annual CTC Service Fee\n` +
+      `• 10-15 Day Payment Window\n\n` +
+      `Please proceed with candidate sourcing.\n`
+    );
+    if (mailtoBtn) {
+      mailtoBtn.href = `mailto:${AVI_PRIMARY_EMAIL}?cc=${AVI_CC_EMAIL}&subject=${mailtoSubject}&body=${mailtoBody}`;
+    }
+
+    openModal('modal_submission_success');
+  }
+
   if (corpForm) {
     corpForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      populateAgreementPreview();
-
-      const coName = document.getElementById('co_name').value.trim();
-      const coordName = document.getElementById('client_coord_name').value.trim();
-
-      // Dispatch alert and show preview modal
-      alert(`Thank you, ${coordName}!\n\nYour Corporate Recruitment Tie-Up details for "${coName}" have been generated successfully under our standard terms:\n• 90-Day Free Replacement Guarantee\n• 8.33% CTC Service Fee\n• 15-Day Payment Period\n\nOpening the official agreement preview now.`);
-
-      openModal('modal_agreement_preview');
+      handleCorporateSubmit();
     });
   }
 
   const btnConfirmModal = document.getElementById('btn_confirm_agreement_modal');
   if (btnConfirmModal) {
     btnConfirmModal.addEventListener('click', () => {
-      alert('Agreement confirmed! Our recruitment coordinator will reach out to you within 2-4 hours to begin candidate sourcing.');
       closeModal(document.getElementById('modal_agreement_preview'));
-      if (corpForm) corpForm.reset();
+      handleCorporateSubmit();
     });
   }
 
@@ -289,13 +453,131 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   const candForm = document.getElementById('candidate_apply_form');
   if (candForm) {
-    candForm.addEventListener('submit', (e) => {
+    candForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      const candSubmitBtn = document.getElementById('btn_submit_candidate') || candForm.querySelector('button[type="submit"]');
+      const origBtnHtml = candSubmitBtn ? candSubmitBtn.innerHTML : '';
+      if (candSubmitBtn) {
+        candSubmitBtn.disabled = true;
+        candSubmitBtn.innerHTML = `<span style="display:inline-block;animation:spin 1s linear infinite;margin-right:8px;">&#9696;</span> Submitting Application &amp; Sending Email...`;
+      }
+
       const candName = document.getElementById('cand_name').value.trim();
-      alert(`Thank you, ${candName}!\n\nYour resume has been successfully submitted to Avi Consultancy's central talent pool. Our executive recruitment consultants will contact you for matching openings.`);
+      const candPhone = document.getElementById('cand_phone').value.trim();
+      const candEmail = document.getElementById('cand_email').value.trim();
+      const candExp = document.getElementById('cand_exp').value;
+      const candField = document.getElementById('cand_field').value;
+      const candCtc = document.getElementById('cand_ctc').value.trim() || 'Not Disclosed';
+      const candLocation = document.getElementById('cand_location').value.trim() || 'Flexible / Open to relocate';
+      const fileInput = document.getElementById('cand_resume_file');
+      const resumeFile = (fileInput && fileInput.files && fileInput.files[0]) ? fileInput.files[0] : null;
+      const resumeName = resumeFile ? resumeFile.name : 'Uploaded File';
+      const timeIST = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+      // Prepare FormSubmit FormData (with CC and file attachment!)
+      const fsData = new FormData();
+      fsData.append('_subject', `[Avi Job Application] ${candName} - ${candField} (${candExp})`);
+      fsData.append('_cc', AVI_CC_EMAIL);
+      fsData.append('_replyto', candEmail);
+      fsData.append('_template', 'table');
+      fsData.append('_captcha', 'false');
+      fsData.append('Candidate Full Name', candName);
+      fsData.append('Mobile Number', candPhone);
+      fsData.append('Email Address', candEmail);
+      fsData.append('Functional Domain / Speciality', candField);
+      fsData.append('Total Work Experience', candExp);
+      fsData.append('Current Annual CTC', candCtc);
+      fsData.append('Preferred Job Location', candLocation);
+      fsData.append('Submission Time (IST)', timeIST);
+      if (resumeFile) {
+        fsData.append('Resume File', resumeFile, resumeFile.name);
+      }
+
+      // Prepare Backend JSON
+      const endpointData = {
+        formType: 'Candidate Application',
+        subject: `[Avi Job Application] ${candName} - ${candField} (${candExp})`,
+        to: AVI_PRIMARY_EMAIL,
+        cc: AVI_CC_EMAIL,
+        replyTo: candEmail,
+        fields: {
+          candidateName: candName,
+          phone: candPhone,
+          email: candEmail,
+          domain: candField,
+          experience: candExp,
+          currentCtc: candCtc,
+          preferredLocation: candLocation,
+          resumeFileName: resumeName,
+          submittedAtIST: timeIST
+        }
+      };
+
+      await dispatchEmailNotification(endpointData, fsData);
+
+      if (candSubmitBtn) {
+        candSubmitBtn.disabled = false;
+        candSubmitBtn.innerHTML = origBtnHtml;
+      }
+
       closeModal(document.getElementById('modal_candidate'));
+
+      // Populate Success Modal
+      const summaryBox = document.getElementById('success_summary_box');
+      const mailtoBtn = document.getElementById('success_mailto_btn');
+
+      if (summaryBox) {
+        summaryBox.innerHTML = `
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
+            <span style="color: #64748b;">Applicant Name:</span>
+            <strong style="color: #0f172a;">${candName}</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
+            <span style="color: #64748b;">Contact:</span>
+            <span>${candPhone} &bull; ${candEmail}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
+            <span style="color: #64748b;">Domain:</span>
+            <strong style="color: #0284c7;">${candField}</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
+            <span style="color: #64748b;">Experience / CTC:</span>
+            <span>${candExp} &bull; ${candCtc}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
+            <span style="color: #64748b;">Attached Resume:</span>
+            <span style="color: #0f172a; font-weight: 600;">&#128196; ${resumeName}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-top: 0.6rem; padding-top: 0.4rem; border-top: 1px solid #e2e8f0;">
+            <span style="color: #64748b;">Recipients:</span>
+            <span style="color: #059669; font-weight: 700;">${AVI_PRIMARY_EMAIL}<br><small style="color: #64748b; font-weight: 400;">CC: ${AVI_CC_EMAIL}</small></span>
+          </div>
+        `;
+      }
+
+      const mailtoSubject = encodeURIComponent(`[Avi Job Application] ${candName} - ${candField}`);
+      const mailtoBody = encodeURIComponent(
+        `Hello Avi Consultancy Recruitment Team,\n\n` +
+        `I have submitted my job application through the Avi Consultancy portal:\n` +
+        `• Name: ${candName}\n` +
+        `• Mobile: ${candPhone}\n` +
+        `• Email: ${candEmail}\n` +
+        `• Functional Domain: ${candField}\n` +
+        `• Total Experience: ${candExp}\n` +
+        `• Current CTC: ${candCtc}\n` +
+        `• Preferred Location: ${candLocation}\n` +
+        `• Attached Resume: ${resumeName}\n\n` +
+        `Please consider my profile for suitable career opportunities.\n`
+      );
+      if (mailtoBtn) {
+        mailtoBtn.href = `mailto:${AVI_PRIMARY_EMAIL}?cc=${AVI_CC_EMAIL}&subject=${mailtoSubject}&body=${mailtoBody}`;
+      }
+
       candForm.reset();
+      openModal('modal_submission_success');
     });
   }
 
 });
+

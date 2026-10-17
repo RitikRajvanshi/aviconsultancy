@@ -1,0 +1,50 @@
+[
+  {
+    "id": "SUB-1792231688572",
+    "receivedAt": "2026-10-17T10:08:08.572Z",
+    "timestampIST": "17/10/2026, 3:38:08 pm",
+    "formType": "Corporate Agreement",
+    "subject": "[Avi Corporate Tie-Up] Acme Corp - Agreement Request (AVI/CORP/2026-7842)",
+    "to": "aviconsultancy1@outlook.com",
+    "cc": "raj.ritik00789@gmail.com",
+    "replyTo": "hr@acme.com",
+    "ref": "AVI/CORP/2026-7842",
+    "fields": {
+      "company": "Acme Corp",
+      "coordinator": "Rajesh Sharma",
+      "email": "hr@acme.com",
+      "contact": "+91 98765 43210",
+      "industry": "Pharma & Healthcare",
+      "terms": "8.33% CTC Fee | 90-Day Free Replacement | 15-Day Payment Window"
+    }
+  },
+  {
+    "id": "SUB-1792231688566",
+    "receivedAt": "2026-10-17T10:08:08.566Z",
+    "timestampIST": "17/10/2026, 3:38:08 pm",
+    "formType": "Candidate Application",
+    "subject": "[Avi Job Application] Amit Kumar - Medical Speciality (3-6 Years)",
+    "to": "aviconsultancy1@outlook.com",
+    "cc": "raj.ritik00789@gmail.com",
+    "replyTo": "amit@gmail.com",
+    "fields": {
+      "candidateName": "Amit Kumar",
+      "phone": "9876543210",
+      "email": "amit@gmail.com",
+      "domain": "Medical & Healthcare",
+      "experience": "3-6 Years",
+      "resumeFileName": "Amit_Kumar_CV.pdf"
+    }
+  },
+  {
+    "id": "SUB-1792231481112",
+    "receivedAt": "2026-10-17T10:04:41.112Z",
+    "timestampIST": "17/10/2026, 3:34:41 pm",
+    "formType": "Test Form",
+    "subject": "Server API Health Check",
+    "replyTo": "test@example.com",
+    "fields": {
+      "status": "healthy"
+    }
+  }
+]
