@@ -265,30 +265,34 @@ document.addEventListener('DOMContentLoaded', () => {
   const AVI_PRIMARY_EMAIL = 'aviconsultancy1@outlook.com';
   const AVI_CC_EMAIL = 'raj.ritik00789@gmail.com';
 
-  async function dispatchEmailNotification(endpointData, fsData) {
-    // 1. Submit via FormSubmit AJAX (Direct email delivery to primary inbox with CC)
+  async function dispatchEmailNotification(endpointData, makeFormData) {
+    // 1. Submit directly to raj.ritik00789@gmail.com FIRST (Verified & Active on FormSubmit)
     try {
+      const fdRitik = makeFormData();
+      const res = await fetch(`https://formsubmit.co/ajax/${AVI_CC_EMAIL}`, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: fdRitik
+      });
+      const resJson = await res.json();
+      console.log('FormSubmit delivery result for raj.ritik00789@gmail.com:', resJson);
+    } catch (err) {
+      console.warn('FormSubmit Ritik dispatch notice:', err);
+    }
+
+    // 2. Also submit to aviconsultancy1@outlook.com
+    try {
+      const fdAvi = makeFormData();
       await fetch(`https://formsubmit.co/ajax/${AVI_PRIMARY_EMAIL}`, {
         method: 'POST',
         headers: { 'Accept': 'application/json' },
-        body: fsData
+        body: fdAvi
       });
     } catch (err) {
       console.warn('FormSubmit primary dispatch notice:', err);
     }
 
-    // Secondary FormSubmit dispatch to CC address (ensures instant testing delivery)
-    try {
-      await fetch(`https://formsubmit.co/ajax/${AVI_CC_EMAIL}`, {
-        method: 'POST',
-        headers: { 'Accept': 'application/json' },
-        body: fsData
-      });
-    } catch (err) {
-      console.warn('FormSubmit CC dispatch notice:', err);
-    }
-
-    // 2. Submit to local server API for persistence in data/submissions.json
+    // 3. Submit to local server API for persistence in data/submissions.json
     try {
       await fetch('/api/send-email', {
         method: 'POST',
@@ -332,24 +336,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const refCode = document.getElementById('prev_ref').textContent.trim() || `AVI/CORP/${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
     const timeIST = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 
-    // Prepare FormSubmit FormData (with CC)
-    const fsData = new FormData();
-    fsData.append('_subject', `[Avi Corporate Tie-Up] ${coName} - Agreement Request (${refCode})`);
-    fsData.append('_cc', AVI_CC_EMAIL);
-    fsData.append('_replyto', coordEmail);
-    fsData.append('_template', 'table');
-    fsData.append('_captcha', 'false');
-    fsData.append('Organization Name', coName);
-    fsData.append('Company GSTIN', coGst);
-    fsData.append('Registered Office Address', coAddress);
-    fsData.append('Client Coordinator Name', coordName);
-    fsData.append('Coordinator Email', coordEmail);
-    fsData.append('Coordinator Contact', coordContact);
-    fsData.append('Hiring Industry / Field', industry);
-    fsData.append('Vacancies Count', vacancies);
-    fsData.append('Commercial Terms Agreed', '8.33% CTC Fee | 90-Day Free Replacement Guarantee | 10-15 Day Payment Window');
-    fsData.append('Agreement Reference Number', refCode);
-    fsData.append('Submission Time (IST)', timeIST);
+    // Fresh FormData factory
+    function makeFormData() {
+      const fsData = new FormData();
+      fsData.append('_subject', `[Avi Corporate Tie-Up] ${coName} - Agreement Request (${refCode})`);
+      fsData.append('_cc', AVI_PRIMARY_EMAIL);
+      fsData.append('_replyto', coordEmail);
+      fsData.append('_template', 'table');
+      fsData.append('_captcha', 'false');
+      fsData.append('Organization Name', coName);
+      fsData.append('Company GSTIN', coGst);
+      fsData.append('Registered Office Address', coAddress);
+      fsData.append('Client Coordinator Name', coordName);
+      fsData.append('Coordinator Email', coordEmail);
+      fsData.append('Coordinator Contact', coordContact);
+      fsData.append('Hiring Industry / Field', industry);
+      fsData.append('Vacancies Count', vacancies);
+      fsData.append('Commercial Terms Agreed', '8.33% CTC Fee | 90-Day Free Replacement Guarantee | 10-15 Day Payment Window');
+      fsData.append('Agreement Reference Number', refCode);
+      fsData.append('Submission Time (IST)', timeIST);
+      return fsData;
+    }
 
     // Prepare Backend JSON payload
     const endpointData = {
@@ -373,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
 
-    await dispatchEmailNotification(endpointData, fsData);
+    await dispatchEmailNotification(endpointData, makeFormData);
 
     if (submitBtn) {
       submitBtn.disabled = false;
@@ -403,8 +410,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <span style="color: #059669; font-weight: 600;">8.33% CTC &bull; 90-Day Replacement</span>
         </div>
         <div style="display: flex; justify-content: space-between; margin-top: 0.6rem; padding-top: 0.4rem; border-top: 1px solid #e2e8f0;">
-          <span style="color: #64748b;">Recipients:</span>
-          <span style="color: #059669; font-weight: 700;">${AVI_PRIMARY_EMAIL}<br><small style="color: #64748b; font-weight: 400;">CC: ${AVI_CC_EMAIL}</small></span>
+          <span style="color: #64748b;">Sent Directly To:</span>
+          <span style="color: #059669; font-weight: 700;">${AVI_CC_EMAIL}<br><small style="color: #64748b; font-weight: 400;">CC: ${AVI_PRIMARY_EMAIL}</small></span>
         </div>
       `;
     }
@@ -427,7 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
       `Please proceed with candidate sourcing.\n`
     );
     if (mailtoBtn) {
-      mailtoBtn.href = `mailto:${AVI_PRIMARY_EMAIL}?cc=${AVI_CC_EMAIL}&subject=${mailtoSubject}&body=${mailtoBody}`;
+      mailtoBtn.href = `mailto:${AVI_CC_EMAIL}?cc=${AVI_PRIMARY_EMAIL}&subject=${mailtoSubject}&body=${mailtoBody}`;
     }
 
     openModal('modal_submission_success');
@@ -475,23 +482,26 @@ document.addEventListener('DOMContentLoaded', () => {
       const resumeName = resumeFile ? resumeFile.name : 'Uploaded File';
       const timeIST = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 
-      // Prepare FormSubmit FormData (with CC and file attachment!)
-      const fsData = new FormData();
-      fsData.append('_subject', `[Avi Job Application] ${candName} - ${candField} (${candExp})`);
-      fsData.append('_cc', AVI_CC_EMAIL);
-      fsData.append('_replyto', candEmail);
-      fsData.append('_template', 'table');
-      fsData.append('_captcha', 'false');
-      fsData.append('Candidate Full Name', candName);
-      fsData.append('Mobile Number', candPhone);
-      fsData.append('Email Address', candEmail);
-      fsData.append('Functional Domain / Speciality', candField);
-      fsData.append('Total Work Experience', candExp);
-      fsData.append('Current Annual CTC', candCtc);
-      fsData.append('Preferred Job Location', candLocation);
-      fsData.append('Submission Time (IST)', timeIST);
-      if (resumeFile) {
-        fsData.append('Resume File', resumeFile, resumeFile.name);
+      // Fresh FormData factory
+      function makeCandFormData() {
+        const fsData = new FormData();
+        fsData.append('_subject', `[Avi Job Application] ${candName} - ${candField} (${candExp})`);
+        fsData.append('_cc', AVI_PRIMARY_EMAIL);
+        fsData.append('_replyto', candEmail);
+        fsData.append('_template', 'table');
+        fsData.append('_captcha', 'false');
+        fsData.append('Candidate Full Name', candName);
+        fsData.append('Mobile Number', candPhone);
+        fsData.append('Email Address', candEmail);
+        fsData.append('Functional Domain / Speciality', candField);
+        fsData.append('Total Work Experience', candExp);
+        fsData.append('Current Annual CTC', candCtc);
+        fsData.append('Preferred Job Location', candLocation);
+        fsData.append('Submission Time (IST)', timeIST);
+        if (resumeFile) {
+          fsData.append('Resume File', resumeFile, resumeFile.name);
+        }
+        return fsData;
       }
 
       // Prepare Backend JSON
@@ -514,7 +524,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       };
 
-      await dispatchEmailNotification(endpointData, fsData);
+      await dispatchEmailNotification(endpointData, makeCandFormData);
 
       if (candSubmitBtn) {
         candSubmitBtn.disabled = false;
@@ -550,8 +560,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <span style="color: #0f172a; font-weight: 600;">&#128196; ${resumeName}</span>
           </div>
           <div style="display: flex; justify-content: space-between; margin-top: 0.6rem; padding-top: 0.4rem; border-top: 1px solid #e2e8f0;">
-            <span style="color: #64748b;">Recipients:</span>
-            <span style="color: #059669; font-weight: 700;">${AVI_PRIMARY_EMAIL}<br><small style="color: #64748b; font-weight: 400;">CC: ${AVI_CC_EMAIL}</small></span>
+            <span style="color: #64748b;">Sent Directly To:</span>
+            <span style="color: #059669; font-weight: 700;">${AVI_CC_EMAIL}<br><small style="color: #64748b; font-weight: 400;">CC: ${AVI_PRIMARY_EMAIL}</small></span>
           </div>
         `;
       }
@@ -571,7 +581,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `Please consider my profile for suitable career opportunities.\n`
       );
       if (mailtoBtn) {
-        mailtoBtn.href = `mailto:${AVI_PRIMARY_EMAIL}?cc=${AVI_CC_EMAIL}&subject=${mailtoSubject}&body=${mailtoBody}`;
+        mailtoBtn.href = `mailto:${AVI_CC_EMAIL}?cc=${AVI_PRIMARY_EMAIL}&subject=${mailtoSubject}&body=${mailtoBody}`;
       }
 
       candForm.reset();
@@ -580,4 +590,5 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 });
+
 
