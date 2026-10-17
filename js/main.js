@@ -6,6 +6,34 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   // ==========================================
+  // 0. SITE PRELOADER (Inspired by eepicmanagement.com)
+  // ==========================================
+  const preloader = document.getElementById('site_preloader');
+  if (preloader) {
+    let dismissed = false;
+    function hidePreloader() {
+      if (dismissed) return;
+      dismissed = true;
+      preloader.classList.add('loaded');
+      setTimeout(() => {
+        preloader.style.display = 'none';
+      }, 600);
+    }
+
+    // Dismiss on window load with smooth visual duration
+    if (document.readyState === 'complete') {
+      setTimeout(hidePreloader, 700);
+    } else {
+      window.addEventListener('load', () => {
+        setTimeout(hidePreloader, 700);
+      });
+    }
+
+    // Fallback safety timeout (guarantees loader never freezes)
+    setTimeout(hidePreloader, 1600);
+  }
+
+  // ==========================================
   // 1. MOBILE DRAWER NAVIGATION
   // ==========================================
   const mobileToggleBtn = document.getElementById('mobile_toggle_btn');

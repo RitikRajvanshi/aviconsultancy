@@ -78,6 +78,105 @@ img, svg {
   max-width: 100%;
 }
 
+/* ==========================================================================
+   PAGE PRELOADER (Inspired by eepicmanagement.com)
+   ========================================================================== */
+.site-preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity, visibility;
+}
+
+.site-preloader.loaded {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.preloader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.preloader-logo-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent !important;
+}
+
+.preloader-logo {
+  height: 76px;
+  width: auto;
+  max-width: 280px;
+  object-fit: contain;
+  background: transparent !important;
+  animation: loader-pulse 1.3s ease-in-out infinite;
+  filter: drop-shadow(0 4px 12px rgba(15, 76, 129, 0.08));
+}
+
+.preloader-progress-track {
+  width: 170px;
+  max-width: 75vw;
+  height: 4px;
+  border-radius: 9999px;
+  background: rgba(15, 76, 129, 0.1);
+  overflow: hidden;
+  position: relative;
+}
+
+.preloader-progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 55%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #0284c7, #0f4c81, #d4af37);
+  animation: loader-bar 1.1s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes loader-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.82;
+    transform: scale(0.96);
+  }
+}
+
+@keyframes loader-bar {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(110%);
+  }
+  100% {
+    transform: translateX(240%);
+  }
+}
+
+
 a {
   color: inherit;
   text-decoration: none;
@@ -1353,15 +1452,15 @@ button, input, select, textarea {
 
 .clients-slider-wrapper::after {
   right: 0;
-  background: linear-gradient(to left, #ffffff 15%, rgba(255, 255, 255, 0));
+  background: linear-gradient(to left, #ffffff 20%, rgba(255, 255, 255, 0));
 }
 
 .clients-slider-track {
   display: flex;
   align-items: center;
-  gap: 3.5rem;
+  gap: 5.5rem;
   width: max-content;
-  animation: scrollLogos 80s linear infinite;
+  animation: scrollLogos 95s linear infinite;
   will-change: transform;
 }
 
@@ -1383,9 +1482,9 @@ button, input, select, textarea {
   border: none !important;
   box-shadow: none !important;
   outline: none !important;
-  padding: 0.5rem 1.25rem;
-  height: 90px;
-  min-width: 230px;
+  padding: 0.6rem 2rem;
+  height: 115px;
+  min-width: 300px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1396,17 +1495,34 @@ button, input, select, textarea {
 }
 
 .client-logo-card:hover {
-  transform: scale(1.12);
-  filter: drop-shadow(0 6px 14px rgba(2, 132, 199, 0.22));
+  transform: scale(1.15);
+  filter: drop-shadow(0 8px 24px rgba(2, 132, 199, 0.28));
 }
 
 .client-logo-card svg {
-  height: 60px;
+  height: 85px;
   width: auto;
-  max-width: 230px;
+  max-width: 290px;
   object-fit: contain;
   display: block;
 }
+
+@media (max-width: 768px) {
+  .clients-slider-track {
+    gap: 3.5rem;
+    animation-duration: 75s;
+  }
+  .client-logo-card {
+    height: 85px;
+    min-width: 220px;
+    padding: 0.4rem 1rem;
+  }
+  .client-logo-card svg {
+    height: 62px;
+    max-width: 220px;
+  }
+}
+
 
 /* ==========================================================================
    CANDIDATE JOB PORTAL / "PROVIDE JOBS"
