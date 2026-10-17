@@ -257,31 +257,43 @@ button, input, select, textarea {
   transition: all var(--transition-fast);
 }
 
-/* Top Notification Notice Bar */
+/* Top Quote Banner Bar */
 .top-notice-bar {
   background: var(--navy-dark);
   color: #cbd5e1;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 0.45rem 0;
-  white-space: nowrap;
+  padding: 0.5rem 0;
+  text-align: center;
 }
 
 .top-notice-inner {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1.25rem;
-  flex-wrap: nowrap;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
 }
 
-.top-notice-announcement {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+.top-quote-text {
   font-weight: 600;
-  white-space: nowrap;
-  flex-shrink: 0;
+  letter-spacing: 0.02em;
+  color: #e2e8f0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+@media (max-width: 600px) {
+  .top-quote-text {
+    font-size: 0.75rem;
+    gap: 0.35rem;
+    line-height: 1.4;
+    white-space: normal;
+    padding: 0 0.5rem;
+  }
 }
 
 .gst-badge-pill {
@@ -296,43 +308,6 @@ button, input, select, textarea {
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
-}
-
-.top-contact-links {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.top-contact-links a,
-.top-contact-links span {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  color: #cbd5e1;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.top-contact-links a:hover {
-  color: var(--blue-light);
-}
-
-@media (max-width: 1024px) {
-  .top-notice-announcement .hide-on-tablet {
-    display: none !important;
-  }
-}
-
-@media (max-width: 900px) {
-  .top-notice-inner {
-    justify-content: center;
-  }
-  .desktop-only-item {
-    display: none !important;
-  }
 }
 
 /* Main Navbar */
