@@ -95,8 +95,8 @@ const server = http.createServer((req, res) => {
         }
 
         console.log(`\n========================================`);
-        console.log(`[EMAIL DISPATCH TO: aviconsultancy1@outlook.com]`);
-        console.log(`[CC FOR TESTING:    raj.ritik00789@gmail.com]`);
+        console.log(`[EMAIL DISPATCH TO: poojapandey.ceo@aviconsultancy.in]`);
+        console.log(`[CC:                raj.ritik00789@gmail.com]`);
         console.log(`Time (IST):         ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}`);
         console.log(`Form Type:          ${data.formType || 'General Form'}`);
         console.log(`Subject:            ${data.subject || 'New Form Submission'}`);
@@ -104,6 +104,11 @@ const server = http.createServer((req, res) => {
         if (savedResume) {
           console.log(`[ATTACHMENT SAVED]: ${savedResume.name} (${savedResume.size})`);
           console.log(`[DOWNLOAD URL]:     ${savedResume.url}`);
+        }
+        if (data.emailBody) {
+          console.log(`--- EMAIL BODY ---`);
+          console.log(data.emailBody);
+          console.log(`------------------`);
         }
         console.log(`Payload Fields:`, data.fields || data);
         console.log(`========================================\n`);
@@ -116,7 +121,7 @@ const server = http.createServer((req, res) => {
         });
         res.end(JSON.stringify({
           success: true,
-          message: 'Form submission received and email notification dispatched to aviconsultancy1@outlook.com and raj.ritik00789@gmail.com',
+          message: 'Form submission received and email notification dispatched to poojapandey.ceo@aviconsultancy.in and raj.ritik00789@gmail.com',
           ref: (savedRecord && savedRecord.id) || ('AVI-' + Date.now()),
           savedResume: savedResume
         }));

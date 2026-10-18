@@ -1,3 +1,6 @@
 local_server.js
 server.js
 .git
+data/
+test_*.js
+test_*.html

@@ -1,6 +1,6 @@
 /**
  * AVI CONSULTANCY — CLIENT PORTAL SCRIPT
- * Interactive Fee Calculator, Mobile Drawer, Corporate Agreement Generator, Job Filters
+ * Services Showcase, Mobile Drawer, Corporate Mandate Generator, Job Filters, Candidate Applications
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -89,41 +89,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ==========================================
-  // 3. INTERACTIVE PLACEMENT FEE CALCULATOR (8.33% CTC)
+  // 3. SERVICE NAVIGATION & INTERACTION
   // ==========================================
-  const ctcSlider = document.getElementById('ctc_slider');
-  const ctcValText = document.getElementById('ctc_val_text');
-  const feeDisplay = document.getElementById('fee_display');
-  const quickCtcBtns = document.querySelectorAll('.quick-ctc-btn');
-
-  function formatIndianRupee(num) {
-    return '₹ ' + Math.round(num).toLocaleString('en-IN');
-  }
-
-  function updateFee() {
-    if (!ctcSlider || !ctcValText || !feeDisplay) return;
-    const ctc = parseFloat(ctcSlider.value);
-    ctcValText.textContent = formatIndianRupee(ctc);
-    
-    // Exact 8.33% calculation
-    const fee = ctc * 0.0833;
-    feeDisplay.textContent = formatIndianRupee(fee);
-  }
-
-  if (ctcSlider) {
-    ctcSlider.addEventListener('input', updateFee);
-    updateFee(); // Initialize
-  }
-
-  quickCtcBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const targetVal = btn.getAttribute('data-ctc');
-      if (targetVal && ctcSlider) {
-        ctcSlider.value = targetVal;
-        updateFee();
-      }
-    });
-  });
+  // Note: Direct corporate mandate model - zero fee charged to job aspirants
 
   // ==========================================
   // 4. CANDIDATE JOB LISTING CATEGORY FILTERS
@@ -262,34 +230,32 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   // EMAIL DISPATCH CONFIGURATION & LOGIC
   // ==========================================
-  const AVI_PRIMARY_EMAIL = 'aviconsultancy1@outlook.com';
+  const AVI_PRIMARY_EMAIL = 'poojapandey.ceo@aviconsultancy.in';
   const AVI_CC_EMAIL = 'raj.ritik00789@gmail.com';
 
   async function dispatchEmailNotification(endpointData, makeFormData) {
-    // 1. Submit directly to raj.ritik00789@gmail.com FIRST (Verified & Active on FormSubmit)
+    // 1. Submit directly to Primary Email (poojapandey.ceo@aviconsultancy.in)
     try {
-      const fdRitik = makeFormData();
-      const res = await fetch(`https://formsubmit.co/ajax/${AVI_CC_EMAIL}`, {
-        method: 'POST',
-        headers: { 'Accept': 'application/json' },
-        body: fdRitik
-      });
-      const resJson = await res.json();
-      console.log('FormSubmit delivery result for raj.ritik00789@gmail.com:', resJson);
-    } catch (err) {
-      console.warn('FormSubmit Ritik dispatch notice:', err);
-    }
-
-    // 2. Also submit to aviconsultancy1@outlook.com
-    try {
-      const fdAvi = makeFormData();
+      const fdPrimary = makeFormData();
       await fetch(`https://formsubmit.co/ajax/${AVI_PRIMARY_EMAIL}`, {
         method: 'POST',
         headers: { 'Accept': 'application/json' },
-        body: fdAvi
+        body: fdPrimary
       });
     } catch (err) {
       console.warn('FormSubmit primary dispatch notice:', err);
+    }
+
+    // 2. Submit to CC (raj.ritik00789@gmail.com)
+    try {
+      const fdCc = makeFormData();
+      await fetch(`https://formsubmit.co/ajax/${AVI_CC_EMAIL}`, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: fdCc
+      });
+    } catch (err) {
+      console.warn('FormSubmit CC dispatch notice:', err);
     }
 
     // 3. Submit to local server API for persistence in data/submissions.json
@@ -312,10 +278,167 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnXSuccess) btnXSuccess.addEventListener('click', () => closeModal(successModal));
 
   // ==========================================
+  // FIELD VALIDATION UTILITIES (Phone 10-13 digits, Email, PDF max 500KB)
+  // ==========================================
+  function validateMobile(phone) {
+    if (!phone || !phone.trim()) {
+      return { valid: false, message: 'Mobile number is required.' };
+    }
+    const raw = phone.trim();
+    // Allow optional leading +, digits, spaces, hyphens
+    if (!/^\+?[0-9\s\-()]+$/.test(raw)) {
+      return { valid: false, message: 'Mobile number can only contain digits and optional + country code.' };
+    }
+    const digitsOnly = raw.replace(/\D/g, '');
+    if (digitsOnly.length < 10 || digitsOnly.length > 13) {
+      return { valid: false, message: `Mobile number must contain 10 to 13 digits (currently ${digitsOnly.length} digits).` };
+    }
+    return { valid: true };
+  }
+
+  function validateEmail(email) {
+    if (!email || !email.trim()) {
+      return { valid: false, message: 'Email address is required.' };
+    }
+    const trimmed = email.trim();
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(trimmed)) {
+      return { valid: false, message: 'Please enter a valid email address (e.g. name@example.com).' };
+    }
+    return { valid: true };
+  }
+
+  function validateResumeFile(file) {
+    if (!file) {
+      return { valid: false, message: 'Please select a resume file (PDF format, max 500 KB).' };
+    }
+    const fileName = file.name.toLowerCase();
+    const isPdf = file.type === 'application/pdf' || fileName.endsWith('.pdf');
+    if (!isPdf) {
+      return { valid: false, message: 'Invalid file format. Only PDF documents (.pdf) are accepted.' };
+    }
+    const maxBytes = 500 * 1024; // 500 KB
+    if (file.size > maxBytes) {
+      const sizeKb = (file.size / 1024).toFixed(1);
+      return { valid: false, message: `File size exceeds 500 KB limit (selected file is ${sizeKb} KB). Please upload a PDF under 500 KB.` };
+    }
+    return { valid: true };
+  }
+
+  function setFieldError(inputEl, errorEl, message) {
+    if (inputEl) inputEl.classList.add('is-invalid');
+    if (errorEl) {
+      errorEl.textContent = message || '';
+      errorEl.style.display = 'block';
+    }
+  }
+
+  function clearFieldError(inputEl, errorEl) {
+    if (inputEl) inputEl.classList.remove('is-invalid');
+    if (errorEl) {
+      errorEl.textContent = '';
+      errorEl.style.display = 'none';
+    }
+  }
+
+  // Real-time Candidate Resume File Change Listener
+  const resumeFileInput = document.getElementById('cand_resume_file');
+  const resumeFileStatus = document.getElementById('resume_file_status');
+  if (resumeFileInput) {
+    resumeFileInput.addEventListener('change', () => {
+      const file = resumeFileInput.files && resumeFileInput.files[0];
+      if (!file) {
+        if (resumeFileStatus) resumeFileStatus.textContent = '';
+        return;
+      }
+      const check = validateResumeFile(file);
+      if (!check.valid) {
+        resumeFileInput.classList.add('is-invalid');
+        if (resumeFileStatus) {
+          resumeFileStatus.className = 'form-file-status error';
+          resumeFileStatus.textContent = check.message;
+        }
+        resumeFileInput.value = '';
+      } else {
+        resumeFileInput.classList.remove('is-invalid');
+        if (resumeFileStatus) {
+          resumeFileStatus.className = 'form-file-status success';
+          resumeFileStatus.textContent = `✓ ${file.name} (${(file.size / 1024).toFixed(1)} KB) - Valid PDF under 500 KB`;
+        }
+      }
+    });
+  }
+
+  // Live input error clearing
+  const candPhoneInput = document.getElementById('cand_phone');
+  const candPhoneError = document.getElementById('cand_phone_error');
+  if (candPhoneInput) {
+    candPhoneInput.addEventListener('input', () => {
+      const check = validateMobile(candPhoneInput.value);
+      if (check.valid) clearFieldError(candPhoneInput, candPhoneError);
+    });
+  }
+
+  const candEmailInput = document.getElementById('cand_email');
+  const candEmailError = document.getElementById('cand_email_error');
+  if (candEmailInput) {
+    candEmailInput.addEventListener('input', () => {
+      const check = validateEmail(candEmailInput.value);
+      if (check.valid) clearFieldError(candEmailInput, candEmailError);
+    });
+  }
+
+  const coordContactInput = document.getElementById('coord_contact');
+  const coordContactError = document.getElementById('coord_contact_error');
+  if (coordContactInput) {
+    coordContactInput.addEventListener('input', () => {
+      const check = validateMobile(coordContactInput.value);
+      if (check.valid) clearFieldError(coordContactInput, coordContactError);
+    });
+  }
+
+  const coordEmailInput = document.getElementById('coord_email');
+  const coordEmailError = document.getElementById('coord_email_error');
+  if (coordEmailInput) {
+    coordEmailInput.addEventListener('input', () => {
+      const check = validateEmail(coordEmailInput.value);
+      if (check.valid) clearFieldError(coordEmailInput, coordEmailError);
+    });
+  }
+
+  // ==========================================
   // 6. CORPORATE AGREEMENT FORM SUBMISSION
   // ==========================================
   async function handleCorporateSubmit() {
     populateAgreementPreview();
+
+    const coName = document.getElementById('co_name').value.trim();
+    const coGst = document.getElementById('co_gst').value.trim() || 'N/A';
+    const coAddress = document.getElementById('co_address').value.trim();
+    const coordName = document.getElementById('client_coord_name').value.trim();
+    const coordEmail = document.getElementById('coord_email').value.trim();
+    const coordContact = document.getElementById('coord_contact').value.trim();
+
+    // Enforce Field Validations
+    clearFieldError(coordEmailInput, coordEmailError);
+    clearFieldError(coordContactInput, coordContactError);
+
+    let hasCorpError = false;
+    const emailCheck = validateEmail(coordEmail);
+    if (!emailCheck.valid) {
+      setFieldError(coordEmailInput, coordEmailError, emailCheck.message);
+      if (coordEmailInput) coordEmailInput.focus();
+      hasCorpError = true;
+    }
+
+    const phoneCheck = validateMobile(coordContact);
+    if (!phoneCheck.valid) {
+      setFieldError(coordContactInput, coordContactError, phoneCheck.message);
+      if (!hasCorpError && coordContactInput) coordContactInput.focus();
+      hasCorpError = true;
+    }
+
+    if (hasCorpError) return;
 
     const submitBtn = document.getElementById('btn_submit_agreement');
     const origBtnHtml = submitBtn ? submitBtn.innerHTML : '';
@@ -324,12 +447,6 @@ document.addEventListener('DOMContentLoaded', () => {
       submitBtn.innerHTML = `<span style="display:inline-block;animation:spin 1s linear infinite;margin-right:8px;">&#9696;</span> Dispatching Agreement &amp; Sending Email...`;
     }
 
-    const coName = document.getElementById('co_name').value.trim();
-    const coGst = document.getElementById('co_gst').value.trim() || 'N/A';
-    const coAddress = document.getElementById('co_address').value.trim();
-    const coordName = document.getElementById('client_coord_name').value.trim();
-    const coordEmail = document.getElementById('coord_email').value.trim();
-    const coordContact = document.getElementById('coord_contact').value.trim();
     const industrySelect = document.getElementById('job_industry_field');
     const industry = industrySelect ? industrySelect.value : 'Multiple / General';
     const vacancies = document.getElementById('open_vacancies').value.trim() || 'Not specified';
@@ -352,7 +469,7 @@ document.addEventListener('DOMContentLoaded', () => {
       fsData.append('Coordinator Contact', coordContact);
       fsData.append('Hiring Industry / Field', industry);
       fsData.append('Vacancies Count', vacancies);
-      fsData.append('Commercial Terms Agreed', '8.33% CTC Fee | 90-Day Free Replacement Guarantee | 10-15 Day Payment Window');
+      fsData.append('Commercial Terms Agreed', 'Direct Corporate Engagement | 90-Day Free Replacement Guarantee | Zero Candidate Charges');
       fsData.append('Agreement Reference Number', refCode);
       fsData.append('Submission Time (IST)', timeIST);
       return fsData;
@@ -375,7 +492,7 @@ document.addEventListener('DOMContentLoaded', () => {
         contact: coordContact,
         industry: industry,
         vacancies: vacancies,
-        terms: '8.33% CTC Fee | 90-Day Free Replacement | 15-Day Payment Window',
+        terms: 'Direct Corporate Engagement | 90-Day Free Replacement Guarantee | Zero Candidate Charges',
         submittedAtIST: timeIST
       }
     };
@@ -407,11 +524,11 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
           <span style="color: #64748b;">Agreed Terms:</span>
-          <span style="color: #059669; font-weight: 600;">8.33% CTC &bull; 90-Day Replacement</span>
+          <span style="color: #059669; font-weight: 600;">Direct Corporate Mandate &bull; 90-Day Replacement</span>
         </div>
         <div style="display: flex; justify-content: space-between; margin-top: 0.6rem; padding-top: 0.4rem; border-top: 1px solid #e2e8f0;">
           <span style="color: #64748b;">Sent Directly To:</span>
-          <span style="color: #059669; font-weight: 700;">${AVI_CC_EMAIL}<br><small style="color: #64748b; font-weight: 400;">CC: ${AVI_PRIMARY_EMAIL}</small></span>
+          <span style="color: #059669; font-weight: 700;">${AVI_PRIMARY_EMAIL}<br><small style="color: #64748b; font-weight: 400;">CC: ${AVI_CC_EMAIL}</small></span>
         </div>
       `;
     }
@@ -429,12 +546,11 @@ document.addEventListener('DOMContentLoaded', () => {
       `• Vacancies: ${vacancies}\n\n` +
       `Agreed Commercial Terms:\n` +
       `• 90-Day Free Candidate Replacement Guarantee\n` +
-      `• 8.33% Annual CTC Service Fee\n` +
-      `• 10-15 Day Payment Window\n\n` +
+      `• Direct Corporate Engagement (Zero candidate charges)\n\n` +
       `Please proceed with candidate sourcing.\n`
     );
     if (mailtoBtn) {
-      mailtoBtn.href = `mailto:${AVI_CC_EMAIL}?cc=${AVI_PRIMARY_EMAIL}&subject=${mailtoSubject}&body=${mailtoBody}`;
+      mailtoBtn.href = `mailto:${AVI_PRIMARY_EMAIL}?cc=${AVI_CC_EMAIL}&subject=${mailtoSubject}&body=${mailtoBody}`;
     }
 
     openModal('modal_submission_success');
@@ -473,14 +589,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (candForm) {
     candForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-
-      const candSubmitBtn = document.getElementById('btn_submit_candidate') || candForm.querySelector('button[type="submit"]');
-      const origBtnHtml = candSubmitBtn ? candSubmitBtn.innerHTML : '';
-      if (candSubmitBtn) {
-        candSubmitBtn.disabled = true;
-        candSubmitBtn.innerHTML = `<span style="display:inline-block;animation:spin 1s linear infinite;margin-right:8px;">&#9696;</span> Saving Resume &amp; Dispatching Application...`;
-      }
-
       const candName = document.getElementById('cand_name').value.trim();
       const candPhone = document.getElementById('cand_phone').value.trim();
       const candEmail = document.getElementById('cand_email').value.trim();
@@ -490,6 +598,50 @@ document.addEventListener('DOMContentLoaded', () => {
       const candLocation = document.getElementById('cand_location').value.trim() || 'Flexible / Open to relocate';
       const fileInput = document.getElementById('cand_resume_file');
       const resumeFile = (fileInput && fileInput.files && fileInput.files[0]) ? fileInput.files[0] : null;
+
+      // Validate Fields
+      clearFieldError(candPhoneInput, candPhoneError);
+      clearFieldError(candEmailInput, candEmailError);
+      if (resumeFileStatus) resumeFileStatus.textContent = '';
+
+      let hasCandError = false;
+
+      const phoneCheck = validateMobile(candPhone);
+      if (!phoneCheck.valid) {
+        setFieldError(candPhoneInput, candPhoneError, phoneCheck.message);
+        if (candPhoneInput) candPhoneInput.focus();
+        hasCandError = true;
+      }
+
+      const emailCheck = validateEmail(candEmail);
+      if (!emailCheck.valid) {
+        setFieldError(candEmailInput, candEmailError, emailCheck.message);
+        if (!hasCandError && candEmailInput) candEmailInput.focus();
+        hasCandError = true;
+      }
+
+      const fileCheck = validateResumeFile(resumeFile);
+      if (!fileCheck.valid) {
+        if (fileInput) fileInput.classList.add('is-invalid');
+        if (resumeFileStatus) {
+          resumeFileStatus.className = 'form-file-status error';
+          resumeFileStatus.textContent = fileCheck.message;
+        }
+        if (!hasCandError && fileInput) fileInput.focus();
+        hasCandError = true;
+      }
+
+      if (hasCandError) {
+        return;
+      }
+
+      const candSubmitBtn = document.getElementById('btn_submit_candidate') || candForm.querySelector('button[type="submit"]');
+      const origBtnHtml = candSubmitBtn ? candSubmitBtn.innerHTML : '';
+      if (candSubmitBtn) {
+        candSubmitBtn.disabled = true;
+        candSubmitBtn.innerHTML = `<span style="display:inline-block;animation:spin 1s linear infinite;margin-right:8px;">&#9696;</span> Saving Resume &amp; Dispatching Application...`;
+      }
+
       const resumeName = resumeFile ? resumeFile.name : 'Uploaded File';
       const resumeSizeKb = resumeFile ? (resumeFile.size / 1024).toFixed(1) + ' KB' : 'Unknown';
       const timeIST = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
@@ -504,26 +656,63 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
+      const emailSubject = `New Job Application Received | ${candName} | ${candField}`;
+
+      const professionalEmailBody =
+`Dear Team,
+
+A new job application has been received through the Aviconsultancy website. Please find the candidate's details below.
+
+CANDIDATE DETAILS
+
+Full Name: ${candName}
+
+Mobile Number: ${candPhone}
+
+Email Address: ${candEmail}
+
+Total Experience: ${candExp}
+
+Functional Domain: ${candField}
+
+Current CTC (Per Annum): ${candCtc}
+
+Preferred Location: ${candLocation}
+
+Resume/CV: Please find the candidate's CV attached to this email for your review.
+
+Kindly review the candidate's profile and resume for further evaluation and suitable job opportunities.
+
+This application was submitted through the Aviconsultancy Careers Portal.
+
+Best regards,
+Team
+Aviconsultancy
+
+This is an automated notification generated by the Aviconsultancy website.`;
+
       // Prepare Backend JSON Payload for local server
       const endpointData = {
         formType: 'Candidate Application',
-        subject: `[Avi Job Application] ${candName} - ${candField} (${candExp})`,
+        subject: emailSubject,
         to: AVI_PRIMARY_EMAIL,
         cc: AVI_CC_EMAIL,
         replyTo: candEmail,
         fileName: resumeName,
         fileBase64: fileBase64,
+        emailBody: professionalEmailBody,
         fields: {
-          candidateName: candName,
-          phone: candPhone,
-          email: candEmail,
-          domain: candField,
-          experience: candExp,
+          fullName: candName,
+          mobileNumber: candPhone,
+          emailAddress: candEmail,
+          totalExperience: candExp,
+          functionalDomain: candField,
           currentCtc: candCtc,
           preferredLocation: candLocation,
           resumeFileName: resumeName,
           resumeFileSize: resumeSizeKb,
-          submittedAtIST: timeIST
+          submittedAtIST: timeIST,
+          formattedMessage: professionalEmailBody
         }
       };
 
@@ -541,16 +730,35 @@ document.addEventListener('DOMContentLoaded', () => {
         console.warn('Local API storage notice:', err);
       }
 
-      // 2. Submit the genuine native HTML form directly into the hidden iframe
-      // This streams the genuine multipart binary file directly to FormSubmit for email attachment delivery!
+      // 2. Submit the clean native HTML form directly into the hidden iframe
+      // FormSubmit receives ONLY: _subject, _replyto, _cc, message, and attachment!
+      // This prevents FormSubmit from printing 9 ugly duplicate boxes and matches a standard email sent in Gmail.
       try {
         const fsSubject = document.getElementById('cand_fs_subject');
         const fsReplyTo = document.getElementById('cand_fs_replyto');
-        if (fsSubject) fsSubject.value = `[Avi Job Application] ${candName} - ${candField} (${candExp})`;
+        const fsMessage = document.getElementById('cand_fs_message');
+        if (fsSubject) fsSubject.value = emailSubject;
         if (fsReplyTo) fsReplyTo.value = candEmail;
+        if (fsMessage) fsMessage.value = professionalEmailBody;
+
+        // Temporarily strip 'name' from individual input fields so FormSubmit does NOT create separate boxed sections
+        const individualInputs = candForm.querySelectorAll('input[name], select[name]');
+        const savedNames = [];
+        individualInputs.forEach(el => {
+          const nm = el.getAttribute('name');
+          if (nm && !['_subject', '_replyto', '_cc', '_captcha', 'message', 'attachment'].includes(nm)) {
+            savedNames.push({ el, name: nm });
+            el.removeAttribute('name');
+          }
+        });
 
         // Trigger native submission into target="formsubmit_hidden_frame"
         HTMLFormElement.prototype.submit.call(candForm);
+
+        // Restore input names immediately
+        savedNames.forEach(item => {
+          item.el.setAttribute('name', item.name);
+        });
       } catch (fsErr) {
         console.warn('Native FormSubmit submission notice:', fsErr);
       }
@@ -572,21 +780,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (summaryBox) {
         summaryBox.innerHTML = `
+          <div style="margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e2e8f0; text-align: left;">
+            <div style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Subject Line:</div>
+            <div style="font-weight: 700; color: #0284c7; font-size: 0.95rem;">${emailSubject}</div>
+          </div>
           <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
-            <span style="color: #64748b;">Applicant Name:</span>
+            <span style="color: #64748b;">Full Name:</span>
             <strong style="color: #0f172a;">${candName}</strong>
           </div>
           <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
-            <span style="color: #64748b;">Contact:</span>
-            <span>${candPhone} &bull; ${candEmail}</span>
+            <span style="color: #64748b;">Mobile Number:</span>
+            <span>${candPhone}</span>
           </div>
           <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
-            <span style="color: #64748b;">Domain:</span>
+            <span style="color: #64748b;">Email Address:</span>
+            <span>${candEmail}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
+            <span style="color: #64748b;">Total Experience:</span>
+            <span>${candExp}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
+            <span style="color: #64748b;">Functional Domain:</span>
             <strong style="color: #0284c7;">${candField}</strong>
           </div>
           <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
-            <span style="color: #64748b;">Experience / CTC:</span>
-            <span>${candExp} &bull; ${candCtc}</span>
+            <span style="color: #64748b;">Current CTC (Per Annum):</span>
+            <span>${candCtc}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
+            <span style="color: #64748b;">Preferred Location:</span>
+            <span>${candLocation}</span>
           </div>
           <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
             <span style="color: #64748b;">Attached Resume:</span>
@@ -594,27 +818,15 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <div style="display: flex; justify-content: space-between; margin-top: 0.6rem; padding-top: 0.4rem; border-top: 1px solid #e2e8f0;">
             <span style="color: #64748b;">Sent Directly To:</span>
-            <span style="color: #059669; font-weight: 700;">${AVI_CC_EMAIL}<br><small style="color: #64748b; font-weight: 400;">CC: ${AVI_PRIMARY_EMAIL}</small></span>
+            <span style="color: #059669; font-weight: 700;">${AVI_PRIMARY_EMAIL}<br><small style="color: #64748b; font-weight: 400;">CC: ${AVI_CC_EMAIL}</small></span>
           </div>
         `;
       }
 
-      const mailtoSubject = encodeURIComponent(`[Avi Job Application] ${candName} - ${candField}`);
-      const mailtoBody = encodeURIComponent(
-        `Hello Avi Consultancy Recruitment Team,\n\n` +
-        `I have submitted my job application through the Avi Consultancy portal:\n` +
-        `• Name: ${candName}\n` +
-        `• Mobile: ${candPhone}\n` +
-        `• Email: ${candEmail}\n` +
-        `• Functional Domain: ${candField}\n` +
-        `• Total Experience: ${candExp}\n` +
-        `• Current CTC: ${candCtc}\n` +
-        `• Preferred Location: ${candLocation}\n` +
-        `• Attached Resume: ${resumeName}\n\n` +
-        `Please consider my profile for suitable career opportunities.\n`
-      );
+      const mailtoSubject = encodeURIComponent(emailSubject);
+      const mailtoBody = encodeURIComponent(professionalEmailBody);
       if (mailtoBtn) {
-        mailtoBtn.href = `mailto:${AVI_CC_EMAIL}?cc=${AVI_PRIMARY_EMAIL}&subject=${mailtoSubject}&body=${mailtoBody}`;
+        mailtoBtn.href = `mailto:${AVI_PRIMARY_EMAIL}?cc=${AVI_CC_EMAIL}&subject=${mailtoSubject}&body=${mailtoBody}`;
       }
 
       candForm.reset();
