@@ -4,3 +4,4 @@ server.js
 data/
 test_*.js
 test_*.html
+verify_*.js

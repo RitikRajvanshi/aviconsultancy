@@ -233,49 +233,57 @@ document.addEventListener('DOMContentLoaded', () => {
   const AVI_PRIMARY_EMAIL = 'poojapandey.ceo@aviconsultancy.in';
   const AVI_CC_EMAIL = 'raj.ritik00789@gmail.com';
 
-  async function dispatchEmailNotification(endpointData, makeFormData) {
-    // 1. Submit directly to Primary Email (poojapandey.ceo@aviconsultancy.in)
-    try {
-      const fdPrimary = makeFormData();
-      await fetch(`https://formsubmit.co/ajax/${AVI_PRIMARY_EMAIL}`, {
-        method: 'POST',
-        headers: { 'Accept': 'application/json' },
-        body: fdPrimary
-      });
-    } catch (err) {
-      console.warn('FormSubmit primary dispatch notice:', err);
-    }
+  // ==========================================
+  // TOAST NOTIFICATION UTILITY
+  // ==========================================
+  function showToast(title, message, duration = 4500) {
+    const container = document.getElementById('toast_container');
+    if (!container) return;
 
-    // 2. Submit to CC (raj.ritik00789@gmail.com)
-    try {
-      const fdCc = makeFormData();
-      await fetch(`https://formsubmit.co/ajax/${AVI_CC_EMAIL}`, {
-        method: 'POST',
-        headers: { 'Accept': 'application/json' },
-        body: fdCc
-      });
-    } catch (err) {
-      console.warn('FormSubmit CC dispatch notice:', err);
-    }
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    toast.setAttribute('role', 'alert');
+    toast.innerHTML = `
+      <div class="toast-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <div class="toast-content">
+        <div class="toast-title">${title}</div>
+        <div class="toast-message">${message}</div>
+      </div>
+      <button type="button" class="toast-close" aria-label="Close notification">&times;</button>
+    `;
 
-    // 3. Submit to local server API for persistence in data/submissions.json
+    const closeBtn = toast.querySelector('.toast-close');
+    const dismiss = () => {
+      toast.classList.add('hide');
+      setTimeout(() => {
+        if (toast.parentNode) toast.parentNode.removeChild(toast);
+      }, 350);
+    };
+
+    if (closeBtn) closeBtn.addEventListener('click', dismiss);
+    container.appendChild(toast);
+
+    setTimeout(dismiss, duration);
+  }
+
+  async function dispatchEmailNotification(endpointData) {
+    // Submit to local server API for storage and direct Nodemailer email dispatch
     try {
-      await fetch('/api/send-email', {
+      const res = await fetch('/api/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(endpointData)
       });
+      return await res.json();
     } catch (err) {
-      // Local API is active when running on Node.js dev server
+      console.warn('Local API dispatch notice:', err);
+      return null;
     }
   }
-
-  // Success Modal Close Handlers
-  const successModal = document.getElementById('modal_submission_success');
-  const btnCloseSuccess = document.getElementById('btn_close_success_modal');
-  const btnXSuccess = document.getElementById('btn_x_success_modal');
-  if (btnCloseSuccess) btnCloseSuccess.addEventListener('click', () => closeModal(successModal));
-  if (btnXSuccess) btnXSuccess.addEventListener('click', () => closeModal(successModal));
 
   // ==========================================
   // FIELD VALIDATION UTILITIES (Phone 10-13 digits, Email, PDF max 500KB)
@@ -475,6 +483,26 @@ document.addEventListener('DOMContentLoaded', () => {
       return fsData;
     }
 
+    const professionalEmailBody =
+`Dear Team,
+
+A new company tie-up request has been received through the Aviconsultancy website. Please find the company's details below.
+
+Agreement_Reference: ${refCode}
+Organization_Name: ${coName}
+Company_GSTIN: ${coGst}
+Registered_Office_Address: ${coAddress}
+Coordinator_Name: ${coordName}
+Coordinator_Contact: ${coordContact}
+Coordinator_Email: ${coordEmail}
+Hiring_Industry: ${industry}
+Open_Vacancies: ${vacancies}
+Commercial_Terms_Agreed: Direct Corporate Engagement | 90-Day Free Replacement Guarantee | Zero Candidate Charges
+
+Best regards,
+Team
+Aviconsultancy`;
+
     // Prepare Backend JSON payload
     const endpointData = {
       formType: 'Corporate Agreement',
@@ -483,6 +511,7 @@ document.addEventListener('DOMContentLoaded', () => {
       cc: AVI_CC_EMAIL,
       replyTo: coordEmail,
       ref: refCode,
+      emailBody: professionalEmailBody,
       fields: {
         company: coName,
         gst: coGst,
@@ -497,63 +526,18 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
 
-    await dispatchEmailNotification(endpointData, makeFormData);
+    await dispatchEmailNotification(endpointData);
 
     if (submitBtn) {
       submitBtn.disabled = false;
       submitBtn.innerHTML = origBtnHtml;
     }
 
-    // Populate Success Modal
-    const summaryBox = document.getElementById('success_summary_box');
-    const mailtoBtn = document.getElementById('success_mailto_btn');
+    const modalAgreement = document.getElementById('modal_agreement_preview');
+    if (modalAgreement) closeModal(modalAgreement);
+    if (corpForm) corpForm.reset();
 
-    if (summaryBox) {
-      summaryBox.innerHTML = `
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem; border-bottom: 1px dashed #e2e8f0; padding-bottom: 0.4rem;">
-          <span style="color: #64748b;">Ref Code:</span>
-          <strong style="color: #0284c7; font-family: var(--font-mono);">${refCode}</strong>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
-          <span style="color: #64748b;">Organization:</span>
-          <strong style="color: #0f172a;">${coName}</strong>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
-          <span style="color: #64748b;">Coordinator:</span>
-          <span>${coordName} (${coordContact})</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
-          <span style="color: #64748b;">Agreed Terms:</span>
-          <span style="color: #059669; font-weight: 600;">Direct Corporate Mandate &bull; 90-Day Replacement</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-top: 0.6rem; padding-top: 0.4rem; border-top: 1px solid #e2e8f0;">
-          <span style="color: #64748b;">Sent Directly To:</span>
-          <span style="color: #059669; font-weight: 700;">${AVI_PRIMARY_EMAIL}<br><small style="color: #64748b; font-weight: 400;">CC: ${AVI_CC_EMAIL}</small></span>
-        </div>
-      `;
-    }
-
-    const mailtoSubject = encodeURIComponent(`[Avi Corporate Tie-Up] ${coName} - Agreement (${refCode})`);
-    const mailtoBody = encodeURIComponent(
-      `Hello Avi Consultancy Team,\n\n` +
-      `We have submitted our Corporate Recruitment Tie-Up details:\n` +
-      `• Agreement Ref: ${refCode}\n` +
-      `• Organization: ${coName}\n` +
-      `• GST: ${coGst}\n` +
-      `• Address: ${coAddress}\n` +
-      `• Coordinator: ${coordName} (${coordContact}, ${coordEmail})\n` +
-      `• Industry / Roles: ${industry}\n` +
-      `• Vacancies: ${vacancies}\n\n` +
-      `Agreed Commercial Terms:\n` +
-      `• 90-Day Free Candidate Replacement Guarantee\n` +
-      `• Direct Corporate Engagement (Zero candidate charges)\n\n` +
-      `Please proceed with candidate sourcing.\n`
-    );
-    if (mailtoBtn) {
-      mailtoBtn.href = `mailto:${AVI_PRIMARY_EMAIL}?cc=${AVI_CC_EMAIL}&subject=${mailtoSubject}&body=${mailtoBody}`;
-    }
-
-    openModal('modal_submission_success');
+    showToast('Agreement Submitted!', 'Your corporate recruitment tie-up details have been submitted successfully.');
   }
 
   if (corpForm) {
@@ -663,33 +647,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 A new job application has been received through the Aviconsultancy website. Please find the candidate's details below.
 
-CANDIDATE DETAILS
-
-Full Name: ${candName}
-
-Mobile Number: ${candPhone}
-
-Email Address: ${candEmail}
-
-Total Experience: ${candExp}
-
-Functional Domain: ${candField}
-
-Current CTC (Per Annum): ${candCtc}
-
-Preferred Location: ${candLocation}
-
-Resume/CV: Please find the candidate's CV attached to this email for your review.
-
-Kindly review the candidate's profile and resume for further evaluation and suitable job opportunities.
-
-This application was submitted through the Aviconsultancy Careers Portal.
+Full_Name: ${candName}
+Mobile_Number: ${candPhone}
+Email_Address: ${candEmail}
+Total_Experience: ${candExp}
+Functional_Domain: ${candField}
+Current_CTC: ${candCtc || 'Not specified'}
+Preferred_Location: ${candLocation || 'Pan-India'}
+Resume/CV: Attached
 
 Best regards,
 Team
-Aviconsultancy
-
-This is an automated notification generated by the Aviconsultancy website.`;
+Aviconsultancy`;
 
       // Prepare Backend JSON Payload for local server
       const endpointData = {
@@ -716,51 +685,15 @@ This is an automated notification generated by the Aviconsultancy website.`;
         }
       };
 
-      // 1. Send to local server API to save resume file to data/resumes/ and record in submissions.json
-      let serverSavedResume = null;
+      // Send to local server API (stores resume in data/resumes, records submission, and dispatches email via Nodemailer)
       try {
-        const localRes = await fetch('/api/send-email', {
+        await fetch('/api/send-email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(endpointData)
         });
-        const localData = await localRes.json();
-        serverSavedResume = localData.savedResume;
       } catch (err) {
         console.warn('Local API storage notice:', err);
-      }
-
-      // 2. Submit the clean native HTML form directly into the hidden iframe
-      // FormSubmit receives ONLY: _subject, _replyto, _cc, message, and attachment!
-      // This prevents FormSubmit from printing 9 ugly duplicate boxes and matches a standard email sent in Gmail.
-      try {
-        const fsSubject = document.getElementById('cand_fs_subject');
-        const fsReplyTo = document.getElementById('cand_fs_replyto');
-        const fsMessage = document.getElementById('cand_fs_message');
-        if (fsSubject) fsSubject.value = emailSubject;
-        if (fsReplyTo) fsReplyTo.value = candEmail;
-        if (fsMessage) fsMessage.value = professionalEmailBody;
-
-        // Temporarily strip 'name' from individual input fields so FormSubmit does NOT create separate boxed sections
-        const individualInputs = candForm.querySelectorAll('input[name], select[name]');
-        const savedNames = [];
-        individualInputs.forEach(el => {
-          const nm = el.getAttribute('name');
-          if (nm && !['_subject', '_replyto', '_cc', '_captcha', 'message', 'attachment'].includes(nm)) {
-            savedNames.push({ el, name: nm });
-            el.removeAttribute('name');
-          }
-        });
-
-        // Trigger native submission into target="formsubmit_hidden_frame"
-        HTMLFormElement.prototype.submit.call(candForm);
-
-        // Restore input names immediately
-        savedNames.forEach(item => {
-          item.el.setAttribute('name', item.name);
-        });
-      } catch (fsErr) {
-        console.warn('Native FormSubmit submission notice:', fsErr);
       }
 
       if (candSubmitBtn) {
@@ -768,69 +701,19 @@ This is an automated notification generated by the Aviconsultancy website.`;
         candSubmitBtn.innerHTML = origBtnHtml;
       }
 
-      closeModal(document.getElementById('modal_candidate'));
-
-      // Populate Success Modal
-      const summaryBox = document.getElementById('success_summary_box');
-      const mailtoBtn = document.getElementById('success_mailto_btn');
-
-      const resumeDownloadHtml = (serverSavedResume && serverSavedResume.url)
-        ? `<a href="${serverSavedResume.url}" target="_blank" style="color: #0284c7; text-decoration: underline; font-weight: 600;">&#128196; ${resumeName} (${serverSavedResume.size})</a>`
-        : `<span style="color: #0f172a; font-weight: 600;">&#128196; ${resumeName} (${resumeSizeKb})</span>`;
-
-      if (summaryBox) {
-        summaryBox.innerHTML = `
-          <div style="margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e2e8f0; text-align: left;">
-            <div style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Subject Line:</div>
-            <div style="font-weight: 700; color: #0284c7; font-size: 0.95rem;">${emailSubject}</div>
-          </div>
-          <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
-            <span style="color: #64748b;">Full Name:</span>
-            <strong style="color: #0f172a;">${candName}</strong>
-          </div>
-          <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
-            <span style="color: #64748b;">Mobile Number:</span>
-            <span>${candPhone}</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
-            <span style="color: #64748b;">Email Address:</span>
-            <span>${candEmail}</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
-            <span style="color: #64748b;">Total Experience:</span>
-            <span>${candExp}</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
-            <span style="color: #64748b;">Functional Domain:</span>
-            <strong style="color: #0284c7;">${candField}</strong>
-          </div>
-          <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
-            <span style="color: #64748b;">Current CTC (Per Annum):</span>
-            <span>${candCtc}</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
-            <span style="color: #64748b;">Preferred Location:</span>
-            <span>${candLocation}</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem;">
-            <span style="color: #64748b;">Attached Resume:</span>
-            ${resumeDownloadHtml}
-          </div>
-          <div style="display: flex; justify-content: space-between; margin-top: 0.6rem; padding-top: 0.4rem; border-top: 1px solid #e2e8f0;">
-            <span style="color: #64748b;">Sent Directly To:</span>
-            <span style="color: #059669; font-weight: 700;">${AVI_PRIMARY_EMAIL}<br><small style="color: #64748b; font-weight: 400;">CC: ${AVI_CC_EMAIL}</small></span>
-          </div>
-        `;
-      }
-
-      const mailtoSubject = encodeURIComponent(emailSubject);
-      const mailtoBody = encodeURIComponent(professionalEmailBody);
-      if (mailtoBtn) {
-        mailtoBtn.href = `mailto:${AVI_PRIMARY_EMAIL}?cc=${AVI_CC_EMAIL}&subject=${mailtoSubject}&body=${mailtoBody}`;
-      }
-
+      // Close candidate modal, reset form, and clear file status
+      const modalCand = document.getElementById('modal_candidate');
+      if (modalCand) closeModal(modalCand);
       candForm.reset();
-      openModal('modal_submission_success');
+
+      const resumeStatusEl = document.getElementById('resume_file_status');
+      if (resumeStatusEl) {
+        resumeStatusEl.textContent = '';
+        resumeStatusEl.className = 'form-file-status';
+      }
+
+      // Display clean toast notification requested by user
+      showToast('Application Submitted!', 'Your CV has been submitted successfully.');
     });
   }
 

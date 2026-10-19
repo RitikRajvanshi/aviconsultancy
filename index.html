@@ -1684,9 +1684,6 @@
     </div>
   </footer>
 
-  <!-- Hidden iframe for native background FormSubmit transmission without page redirect -->
-  <iframe name="formsubmit_hidden_frame" id="formsubmit_hidden_frame" style="display:none; width:0; height:0; border:0;"></iframe>
-
   <!-- ==========================================================================
        MODAL 1: CANDIDATE RESUME SUBMISSION MODAL
        ========================================================================== -->
@@ -1697,27 +1694,22 @@
         <button class="modal-close-btn">&times;</button>
       </div>
       <div class="modal-body">
-        <form id="candidate_apply_form" action="https://formsubmit.co/poojapandey.ceo@aviconsultancy.in" method="POST" enctype="multipart/form-data" target="formsubmit_hidden_frame">
-          <input type="hidden" name="_cc" value="raj.ritik00789@gmail.com">
-          <input type="hidden" name="_captcha" value="false">
-          <input type="hidden" name="_subject" id="cand_fs_subject" value="New Job Application Received">
-          <input type="hidden" name="_replyto" id="cand_fs_replyto" value="">
-          <input type="hidden" name="message" id="cand_fs_message" value="">
+        <form id="candidate_apply_form" novalidate>
 
           <div class="form-group" style="margin-bottom: 1rem;">
             <label class="form-label" for="cand_name">Full Name <span class="req">*</span></label>
-            <input type="text" id="cand_name" name="Full Name" class="form-input" placeholder="e.g. Amit Kumar" required>
+            <input type="text" id="cand_name" name="Full_Name" class="form-input" placeholder="e.g. Amit Kumar" required>
           </div>
 
           <div class="form-grid-2col" style="margin-bottom: 1rem;">
             <div class="form-group">
               <label class="form-label" for="cand_phone">Mobile Number <span class="req">*</span></label>
-              <input type="tel" id="cand_phone" name="Mobile Number" class="form-input" placeholder="e.g. 9876543210" minlength="10" maxlength="15" required>
+              <input type="tel" id="cand_phone" name="Mobile_Number" class="form-input" placeholder="e.g. 9876543210" minlength="10" maxlength="15" required>
               <span class="form-error-msg" id="cand_phone_error"></span>
             </div>
             <div class="form-group">
               <label class="form-label" for="cand_email">Email Address <span class="req">*</span></label>
-              <input type="email" id="cand_email" name="Email Address" class="form-input" placeholder="e.g. amit@gmail.com" required>
+              <input type="email" id="cand_email" name="Email_Address" class="form-input" placeholder="e.g. amit@gmail.com" required>
               <span class="form-error-msg" id="cand_email_error"></span>
             </div>
           </div>
@@ -1725,7 +1717,7 @@
           <div class="form-grid-2col" style="margin-bottom: 1rem;">
             <div class="form-group">
               <label class="form-label" for="cand_exp">Total Experience</label>
-              <select id="cand_exp" name="Total Experience" class="form-select">
+              <select id="cand_exp" name="Total_Experience" class="form-select">
                 <option value="Fresher">Fresher (0 Years)</option>
                 <option value="1-3 Years">1 - 3 Years</option>
                 <option value="3-6 Years">3 - 6 Years</option>
@@ -1735,7 +1727,7 @@
             </div>
             <div class="form-group">
               <label class="form-label" for="cand_field">Functional Domain <span class="req">*</span></label>
-              <select id="cand_field" name="Functional Domain" class="form-select" required>
+              <select id="cand_field" name="Functional_Domain" class="form-select" required>
                 <option value="Medical, Doctors & Healthcare">&#9733; Medical, Doctors &amp; Healthcare (Speciality)</option>
                 <option value="Chartered Accountant (CA)">Chartered Accountant (CA)</option>
                 <option value="Accounts, GST & Taxation">Accounts, GST &amp; Taxation</option>
@@ -1752,11 +1744,11 @@
           <div class="form-grid-2col" style="margin-bottom: 1.25rem;">
             <div class="form-group">
               <label class="form-label" for="cand_ctc">Current CTC (Per Annum)</label>
-              <input type="text" id="cand_ctc" name="Current CTC (Per Annum)" class="form-input" placeholder="e.g. ₹5,50,000">
+              <input type="text" id="cand_ctc" name="Current_CTC" class="form-input" placeholder="e.g. 700000">
             </div>
             <div class="form-group">
               <label class="form-label" for="cand_location">Preferred Location</label>
-              <input type="text" id="cand_location" name="Preferred Location" class="form-input" placeholder="e.g. Lucknow / Delhi NCR / Pan India">
+              <input type="text" id="cand_location" name="Preferred_Location" class="form-input" placeholder="e.g. Lucknow / Delhi NCR / Pan India">
             </div>
           </div>
 
@@ -1853,42 +1845,8 @@
     </div>
   </div>
 
-  <!-- ==========================================================================
-       MODAL 3: SUBMISSION SUCCESS & EMAIL DISPATCH CONFIRMATION MODAL
-       ========================================================================== -->
-  <div class="modal-overlay" id="modal_submission_success" role="dialog" aria-modal="true" aria-labelledby="success_modal_title">
-    <div class="modal-box" style="max-width: 540px; text-align: center;">
-      <div class="modal-header" style="justify-content: flex-end; border-bottom: none; padding-bottom: 0;">
-        <button class="modal-close-btn" id="btn_x_success_modal">&times;</button>
-      </div>
-      <div class="modal-body" style="padding: 0.5rem 2rem 2.25rem;">
-        <div style="width: 72px; height: 72px; background: #ecfdf5; color: #059669; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; font-size: 2.2rem; box-shadow: 0 10px 25px rgba(5, 150, 105, 0.22); border: 2px solid #a7f3d0;">
-          &#10003;
-        </div>
-        <h3 id="success_modal_title" style="font-size: 1.45rem; font-weight: 800; color: #0f172a; margin-bottom: 0.5rem;">
-          Submission Received &amp; Email Dispatched!
-        </h3>
-        <p id="success_modal_desc" style="color: #64748b; font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem;">
-          Your details have been recorded and email notifications dispatched to <strong>poojapandey.ceo@aviconsultancy.in</strong> (with CC to <strong>raj.ritik00789@gmail.com</strong>).
-        </p>
-
-        <!-- Summary Details Box -->
-        <div id="success_summary_box" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem; text-align: left; margin-bottom: 1.75rem; font-size: 0.9rem; line-height: 1.6;">
-          <!-- Dynamically populated via JavaScript -->
-        </div>
-
-        <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
-          <a href="mailto:poojapandey.ceo@aviconsultancy.in?cc=raj.ritik00789@gmail.com" id="success_mailto_btn" class="btn btn-outline-blue btn-sm" target="_blank" style="display: inline-flex; align-items: center; gap: 0.4rem;">
-            <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-            Open in Email App
-          </a>
-          <button type="button" class="btn btn-primary btn-sm" id="btn_close_success_modal">
-            Done / Continue
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- Toast Notification Container for Clean Confirmation -->
+  <div class="toast-container" id="toast_container" role="region" aria-label="Notifications" aria-live="polite"></div>
 
   <!-- Floating WhatsApp Quick Connect Button -->
   <a href="https://wa.me/916394491832?text=Hello%20Avi%20Consultancy,%20we%20want%20to%20discuss%20recruitment%20services." target="_blank" class="floating-contact-btn" id="floating_whatsapp" aria-label="Chat on WhatsApp">
@@ -1896,6 +1854,6 @@
   </a>
 
   <!-- Main JavaScript File -->
-  <script src="js/main.js?v=41"></script>
+  <script src="js/main.js?v=42"></script>
 </body>
 </html>

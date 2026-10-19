@@ -1,0 +1,13 @@
+{
+  "name": "staging-aviconsultancy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Avi Consultancy Official Placement & Career Portal",
+  "main": "local_server.js",
+  "scripts": {
+    "start": "node local_server.js"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.16"
+  }
+}
