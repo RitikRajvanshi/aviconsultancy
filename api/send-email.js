@@ -1,5 +1,15 @@
 const nodemailer = require('nodemailer');
 
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function generateArialEmailHtml(data) {
   const fields = data.fields || {};
   const isCorporate = (data.formType === 'Corporate Agreement' || data.formType === 'Company Tie-Up' || !!fields.company || !!fields['Organization Name'] || !!fields.coName);
@@ -7,7 +17,7 @@ function generateArialEmailHtml(data) {
   const defaultSubject = isCorporate
     ? `[Avi Corporate Tie-Up] ${(fields.company || fields['Organization Name'] || fields.coName || 'Company')} - Agreement Request`
     : 'New Job Application Received | Ritik Rajvanshi | IT & Software Development';
-  const subject = data.subject || defaultSubject;
+  const subject = escapeHtml(data.subject || defaultSubject);
 
   const headerIntroText = isCorporate
     ? "A new company tie-up request has been received through the Aviconsultancy website. Please find the company's details below."
@@ -28,10 +38,10 @@ function generateArialEmailHtml(data) {
     ];
     tableRows = candidateFields.map(([label, val]) => `
       <tr>
-        <td style="padding: 10px 14px; font-weight: bold; color: #000000; width: 35%; border: 1px solid #d1d5db; font-family: Arial, Helvetica, sans-serif; font-size: 13.5px; background: #ffffff;">${label}</td>
+        <td style="padding: 10px 14px; font-weight: bold; color: #000000; width: 35%; border: 1px solid #d1d5db; font-family: Arial, Helvetica, sans-serif; font-size: 13.5px; background: #ffffff;">${escapeHtml(label)}</td>
         <td style="padding: 10px 14px; color: #1e293b; border: 1px solid #d1d5db; font-family: Arial, Helvetica, sans-serif; font-size: 13.5px; background: #ffffff;">${
-          label === 'Email_Address' ? `<a href="mailto:${val}" style="color: #2563eb; text-decoration: underline; font-family: Arial, sans-serif;">${val}</a>` :
-          label === 'Mobile_Number' ? `<a href="tel:${val}" style="color: #2563eb; text-decoration: underline; font-family: Arial, sans-serif;">${val}</a>` : val
+          label === 'Email_Address' ? `<a href="mailto:${encodeURIComponent(val)}" style="color: #2563eb; text-decoration: underline; font-family: Arial, sans-serif;">${escapeHtml(val)}</a>` :
+          label === 'Mobile_Number' ? `<a href="tel:${encodeURIComponent(val)}" style="color: #2563eb; text-decoration: underline; font-family: Arial, sans-serif;">${escapeHtml(val)}</a>` : escapeHtml(val)
         }</td>
       </tr>
     `).join('');
@@ -50,10 +60,10 @@ function generateArialEmailHtml(data) {
     ];
     tableRows = corpFields.map(([label, val]) => `
       <tr>
-        <td style="padding: 10px 14px; font-weight: bold; color: #000000; width: 35%; border: 1px solid #d1d5db; font-family: Arial, Helvetica, sans-serif; font-size: 13.5px; background: #ffffff;">${label}</td>
+        <td style="padding: 10px 14px; font-weight: bold; color: #000000; width: 35%; border: 1px solid #d1d5db; font-family: Arial, Helvetica, sans-serif; font-size: 13.5px; background: #ffffff;">${escapeHtml(label)}</td>
         <td style="padding: 10px 14px; color: #1e293b; border: 1px solid #d1d5db; font-family: Arial, Helvetica, sans-serif; font-size: 13.5px; background: #ffffff;">${
-          label === 'Coordinator_Email' ? `<a href="mailto:${val}" style="color: #2563eb; text-decoration: underline; font-family: Arial, sans-serif;">${val}</a>` :
-          label === 'Coordinator_Contact' ? `<a href="tel:${val}" style="color: #2563eb; text-decoration: underline; font-family: Arial, sans-serif;">${val}</a>` : val
+          label === 'Coordinator_Email' ? `<a href="mailto:${encodeURIComponent(val)}" style="color: #2563eb; text-decoration: underline; font-family: Arial, sans-serif;">${escapeHtml(val)}</a>` :
+          label === 'Coordinator_Contact' ? `<a href="tel:${encodeURIComponent(val)}" style="color: #2563eb; text-decoration: underline; font-family: Arial, sans-serif;">${escapeHtml(val)}</a>` : escapeHtml(val)
         }</td>
       </tr>
     `).join('');
@@ -118,18 +128,24 @@ function generateArialEmailHtml(data) {
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
 
   if (req.method === 'OPTIONS') {
     return res.status(204).end();
   }
 
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
+    return res.status(405).json({ success: false, error: 'Method Not Allowed' });
   }
 
   try {
     const data = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+
+    // Payload abuse prevention
+    if (data.fileBase64 && typeof data.fileBase64 === 'string' && data.fileBase64.length > 6 * 1024 * 1024) {
+      return res.status(413).json({ success: false, error: 'File size exceeds maximum allowed limit (500 KB).' });
+    }
+
     const isCorporate = (data.formType === 'Corporate Agreement' || data.formType === 'Company Tie-Up' || !!(data.fields && (data.fields.company || data.fields['Organization Name'] || data.fields.coName)));
 
     const emailHtml = generateArialEmailHtml(data);
@@ -166,7 +182,7 @@ module.exports = async (req, res) => {
         const matches = data.fileBase64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
         const content = matches ? Buffer.from(matches[2], 'base64') : Buffer.from(data.fileBase64, 'base64');
         mailOptions.attachments.push({
-          filename: data.fileName,
+          filename: data.fileName.replace(/[^a-zA-Z0-9._-]/g, '_'),
           content: content
         });
       } catch (attErr) {

@@ -137,6 +137,16 @@ const MIME_TYPES = {
   '.txt': 'text/plain'
 };
 
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function generateArialEmailHtml(data, savedResume) {
   const fields = data.fields || {};
   const isCorporate = (data.formType === 'Corporate Agreement' || data.formType === 'Company Tie-Up' || !!fields.company || !!fields['Organization Name'] || !!fields.coName);
@@ -144,7 +154,7 @@ function generateArialEmailHtml(data, savedResume) {
   const defaultSubject = isCorporate
     ? `[Avi Corporate Tie-Up] ${(fields.company || fields['Organization Name'] || fields.coName || 'Company')} - Agreement Request`
     : 'New Job Application Received | Ritik Rajvanshi | IT & Software Development';
-  const subject = data.subject || defaultSubject;
+  const subject = escapeHtml(data.subject || defaultSubject);
   const toEmail = data.to || 'poojapandey.ceo@aviconsultancy.in';
   const ccEmail = data.cc || 'raj.ritik00789@gmail.com';
   const replyTo = data.replyTo || (isCorporate ? (fields.email || fields.coordEmail || fields['Coordinator Email'] || 'raj.ritik00789@gmail.com') : (fields.emailAddress || 'raj.ritik00789@gmail.com'));
@@ -169,11 +179,11 @@ function generateArialEmailHtml(data, savedResume) {
     ];
     tableRows = candidateFields.map(([label, val]) => `
       <tr>
-        <td style="padding: 10px 14px; font-weight: bold; color: #000000; width: 35%; border: 1px solid #d1d5db; font-family: Arial, Helvetica, sans-serif; font-size: 13.5px; background: #ffffff;">${label}</td>
+        <td style="padding: 10px 14px; font-weight: bold; color: #000000; width: 35%; border: 1px solid #d1d5db; font-family: Arial, Helvetica, sans-serif; font-size: 13.5px; background: #ffffff;">${escapeHtml(label)}</td>
         <td style="padding: 10px 14px; color: #1e293b; border: 1px solid #d1d5db; font-family: Arial, Helvetica, sans-serif; font-size: 13.5px; background: #ffffff;">${
-          label === 'Email_Address' ? `<a href="mailto:${val}" style="color: #2563eb; text-decoration: underline; font-family: Arial, sans-serif;">${val}</a>` :
-          label === 'Mobile_Number' ? `<a href="tel:${val}" style="color: #2563eb; text-decoration: underline; font-family: Arial, sans-serif;">${val}</a>` :
-          label === 'Resume_Attachment' && savedResume && savedResume.url ? `<a href="${savedResume.url}" target="_blank" style="color: #2563eb; text-decoration: underline; font-weight: bold; font-family: Arial, sans-serif;">${val}</a>` : val
+          label === 'Email_Address' ? `<a href="mailto:${encodeURIComponent(val)}" style="color: #2563eb; text-decoration: underline; font-family: Arial, sans-serif;">${escapeHtml(val)}</a>` :
+          label === 'Mobile_Number' ? `<a href="tel:${encodeURIComponent(val)}" style="color: #2563eb; text-decoration: underline; font-family: Arial, sans-serif;">${escapeHtml(val)}</a>` :
+          label === 'Resume_Attachment' && savedResume && savedResume.url ? `<a href="${encodeURI(savedResume.url)}" target="_blank" style="color: #2563eb; text-decoration: underline; font-weight: bold; font-family: Arial, sans-serif;">${escapeHtml(val)}</a>` : escapeHtml(val)
         }</td>
       </tr>
     `).join('');
@@ -193,10 +203,10 @@ function generateArialEmailHtml(data, savedResume) {
     ];
     tableRows = corpFields.map(([label, val]) => `
       <tr>
-        <td style="padding: 10px 14px; font-weight: bold; color: #000000; width: 35%; border: 1px solid #d1d5db; font-family: Arial, Helvetica, sans-serif; font-size: 13.5px; background: #ffffff;">${label}</td>
+        <td style="padding: 10px 14px; font-weight: bold; color: #000000; width: 35%; border: 1px solid #d1d5db; font-family: Arial, Helvetica, sans-serif; font-size: 13.5px; background: #ffffff;">${escapeHtml(label)}</td>
         <td style="padding: 10px 14px; color: #1e293b; border: 1px solid #d1d5db; font-family: Arial, Helvetica, sans-serif; font-size: 13.5px; background: #ffffff;">${
-          label === 'Coordinator_Email' ? `<a href="mailto:${val}" style="color: #2563eb; text-decoration: underline; font-family: Arial, sans-serif;">${val}</a>` :
-          label === 'Coordinator_Contact' ? `<a href="tel:${val}" style="color: #2563eb; text-decoration: underline; font-family: Arial, sans-serif;">${val}</a>` : val
+          label === 'Coordinator_Email' ? `<a href="mailto:${encodeURIComponent(val)}" style="color: #2563eb; text-decoration: underline; font-family: Arial, sans-serif;">${escapeHtml(val)}</a>` :
+          label === 'Coordinator_Contact' ? `<a href="tel:${encodeURIComponent(val)}" style="color: #2563eb; text-decoration: underline; font-family: Arial, sans-serif;">${escapeHtml(val)}</a>` : escapeHtml(val)
         }</td>
       </tr>
     `).join('');

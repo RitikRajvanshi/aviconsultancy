@@ -236,18 +236,27 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   // TOAST NOTIFICATION UTILITY
   // ==========================================
-  function showToast(title, message, duration = 4500) {
+  function showToast(title, message, type = 'success', duration = 5000) {
     const container = document.getElementById('toast_container');
     if (!container) return;
 
     const toast = document.createElement('div');
-    toast.className = 'toast-notification';
+    toast.className = `toast-notification ${type === 'error' ? 'error' : ''}`;
     toast.setAttribute('role', 'alert');
+
+    const iconSvg = type === 'error'
+      ? `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>`
+      : `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>`;
+
     toast.innerHTML = `
       <div class="toast-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="20 6 9 17 4 12"></polyline>
-        </svg>
+        ${iconSvg}
       </div>
       <div class="toast-content">
         <div class="toast-title">${title}</div>
@@ -271,17 +280,20 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function dispatchEmailNotification(endpointData) {
-    // Submit to local server API for storage and direct Nodemailer email dispatch
     try {
       const res = await fetch('/api/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(endpointData)
       });
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}));
+        return { success: false, error: errJson.error || `Server returned ${res.status}` };
+      }
       return await res.json();
     } catch (err) {
-      console.warn('Local API dispatch notice:', err);
-      return null;
+      console.warn('API dispatch notice:', err);
+      return { success: false, error: err.message };
     }
   }
 
@@ -526,18 +538,21 @@ Aviconsultancy`;
       }
     };
 
-    await dispatchEmailNotification(endpointData);
+    const result = await dispatchEmailNotification(endpointData);
 
     if (submitBtn) {
       submitBtn.disabled = false;
       submitBtn.innerHTML = origBtnHtml;
     }
 
-    const modalAgreement = document.getElementById('modal_agreement_preview');
-    if (modalAgreement) closeModal(modalAgreement);
-    if (corpForm) corpForm.reset();
-
-    showToast('Agreement Submitted!', 'Your corporate recruitment tie-up details have been submitted successfully.');
+    if (result && result.success) {
+      const modalAgreement = document.getElementById('modal_agreement_preview');
+      if (modalAgreement) closeModal(modalAgreement);
+      if (corpForm) corpForm.reset();
+      showToast('Agreement Submitted!', 'Your corporate recruitment tie-up details have been submitted successfully.', 'success');
+    } else {
+      showToast('Submission Notice', (result && result.error) ? `Could not submit: ${result.error}. Please try again or WhatsApp us at +91 63944 91832.` : 'Could not reach server. Please try again or WhatsApp us at +91 63944 91832.', 'error');
+    }
   }
 
   if (corpForm) {
@@ -685,35 +700,44 @@ Aviconsultancy`;
         }
       };
 
-      // Send to local server API (stores resume in data/resumes, records submission, and dispatches email via Nodemailer)
+      // Send to server API (stores resume in data/resumes, records submission, and dispatches email via Nodemailer)
       try {
-        await fetch('/api/send-email', {
+        const res = await fetch('/api/send-email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(endpointData)
         });
+        const result = await res.json().catch(() => ({ success: res.ok }));
+
+        if (candSubmitBtn) {
+          candSubmitBtn.disabled = false;
+          candSubmitBtn.innerHTML = origBtnHtml;
+        }
+
+        if (result && result.success) {
+          // Close candidate modal, reset form, and clear file status
+          const modalCand = document.getElementById('modal_candidate');
+          if (modalCand) closeModal(modalCand);
+          candForm.reset();
+
+          const resumeStatusEl = document.getElementById('resume_file_status');
+          if (resumeStatusEl) {
+            resumeStatusEl.textContent = '';
+            resumeStatusEl.className = 'form-file-status';
+          }
+
+          showToast('Application Submitted!', 'Your CV has been submitted successfully.', 'success');
+        } else {
+          showToast('Submission Notice', (result && result.error) ? `Could not submit CV: ${result.error}. Please try again.` : 'Could not reach server. Please try again or WhatsApp your CV to +91 63944 91832.', 'error');
+        }
       } catch (err) {
-        console.warn('Local API storage notice:', err);
+        console.warn('API storage notice:', err);
+        if (candSubmitBtn) {
+          candSubmitBtn.disabled = false;
+          candSubmitBtn.innerHTML = origBtnHtml;
+        }
+        showToast('Network Notice', 'Network connection issue. Please check your internet or WhatsApp your CV to +91 63944 91832.', 'error');
       }
-
-      if (candSubmitBtn) {
-        candSubmitBtn.disabled = false;
-        candSubmitBtn.innerHTML = origBtnHtml;
-      }
-
-      // Close candidate modal, reset form, and clear file status
-      const modalCand = document.getElementById('modal_candidate');
-      if (modalCand) closeModal(modalCand);
-      candForm.reset();
-
-      const resumeStatusEl = document.getElementById('resume_file_status');
-      if (resumeStatusEl) {
-        resumeStatusEl.textContent = '';
-        resumeStatusEl.className = 'form-file-status';
-      }
-
-      // Display clean toast notification requested by user
-      showToast('Application Submitted!', 'Your CV has been submitted successfully.');
     });
   }
 
