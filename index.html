@@ -9,6 +9,11 @@
   <meta name="author" content="Avi Consultancy">
   <meta name="theme-color" content="#2b4380">
   <link rel="canonical" href="https://aviconsultancy.in">
+  <script>
+    if (window.location.hostname === 'aviconsultancy.vercel.app') {
+      window.location.replace('https://aviconsultancy.in' + window.location.pathname + window.location.search + window.location.hash);
+    }
+  </script>
 
   <!-- Open Graph / Social Sharing -->
   <meta property="og:title" content="Avi Consultancy | Empowering Careers, Fostering Growth">
