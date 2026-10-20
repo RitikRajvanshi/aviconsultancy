@@ -7,11 +7,10 @@ const PORT = 3000;
 const PUBLIC_DIR = __dirname;
 const DATA_DIR = path.join(__dirname, 'data');
 const RESUMES_DIR = path.join(DATA_DIR, 'resumes');
-const EMAILS_DIR = path.join(DATA_DIR, 'emails');
 const SUBMISSIONS_FILE = path.join(DATA_DIR, 'submissions.json');
 
 // Ensure directories exist
-[DATA_DIR, RESUMES_DIR, EMAILS_DIR].forEach(dir => {
+[DATA_DIR, RESUMES_DIR].forEach(dir => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
@@ -290,41 +289,31 @@ function saveSubmission(submission) {
   }
 }
 
-// Generate an initial default Arial email preview so the preview page works immediately
-const defaultEmailHtml = generateArialEmailHtml({
-  formType: 'Candidate Application',
-  subject: 'New Job Application Received | Ritik Rajvanshi | IT & Software Development',
-  to: 'poojapandey.ceo@aviconsultancy.in',
-  cc: 'raj.ritik00789@gmail.com',
-  fields: {
-    fullName: 'Ritik Rajvanshi',
-    mobileNumber: '07272093133',
-    emailAddress: 'raj.ritik00789@gmail.com',
-    totalExperience: '3-6 Years',
-    functionalDomain: 'IT & Software Development',
-    currentCtc: '700000',
-    preferredLocation: 'Lucknow'
-  },
-  fileName: 'ritik_updated_resume.pdf'
-}, null);
-
-fs.writeFileSync(path.join(EMAILS_DIR, 'latest_email.html'), defaultEmailHtml);
-
 const server = http.createServer((req, res) => {
   let reqPath = req.url.split('?')[0];
 
-  // Route to view the formatted email in Arial font
+  // Route to view the formatted email in Arial font (rendered in-memory without saving to disk)
   if (req.method === 'GET' && (reqPath === '/email-preview' || reqPath === '/latest-email')) {
-    const latestFile = path.join(EMAILS_DIR, 'latest_email.html');
-    if (fs.existsSync(latestFile)) {
-      const htmlContent = fs.readFileSync(latestFile, 'utf8');
-      res.writeHead(200, {
-        'Content-Type': 'text/html; charset=utf-8',
-        'Cache-Control': 'no-cache, no-store, must-revalidate'
-      });
-      res.end(htmlContent);
-      return;
-    }
+    const htmlContent = generateArialEmailHtml({
+      formType: 'Candidate Application',
+      subject: 'New Job Application Received | Ritik Rajvanshi | IT & Software Development',
+      fields: {
+        fullName: 'Ritik Rajvanshi',
+        mobileNumber: '07272093133',
+        emailAddress: 'raj.ritik00789@gmail.com',
+        totalExperience: '3-6 Years',
+        functionalDomain: 'IT & Software Development',
+        currentCtc: '700000',
+        preferredLocation: 'Lucknow'
+      },
+      fileName: 'ritik_updated_resume.pdf'
+    }, null);
+    res.writeHead(200, {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Cache-Control': 'no-cache, no-store, must-revalidate'
+    });
+    res.end(htmlContent);
+    return;
   }
 
   // API endpoint for form submissions & email notifications
@@ -335,7 +324,7 @@ const server = http.createServer((req, res) => {
       try {
         const data = JSON.parse(body || '{}');
 
-        // Handle uploaded file if present
+        // Handle uploaded file if present (saved only to data/resumes)
         let savedResume = null;
         if (data.fileBase64 && data.fileName) {
           try {
@@ -365,10 +354,8 @@ const server = http.createServer((req, res) => {
           }
         }
 
-        // Generate and save HTML email formatted with Arial typography
+        // Generate HTML email for live dispatch (not written to disk)
         const emailHtml = generateArialEmailHtml(data, savedResume);
-        fs.writeFileSync(path.join(EMAILS_DIR, 'latest_email.html'), emailHtml);
-        fs.writeFileSync(path.join(EMAILS_DIR, `email_${Date.now()}.html`), emailHtml);
 
         // Send via Nodemailer (with custom sender "Avi Consultancy", exact Header above & Footer below)
         const mailResult = await sendEmailViaNodemailer(data, savedResume, emailHtml);
