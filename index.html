@@ -35,31 +35,99 @@
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=4">
   <link rel="stylesheet" href="css/style.css?v=36">
 
-  <!-- Schema.org JSON-LD Structured Data -->
+  <!-- Schema.org JSON-LD Structured Data for Google Knowledge Graph & Local Pack -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "EmploymentAgency",
+    "@id": "https://aviconsultancy.in/#organization",
     "name": "Avi Consultancy",
-    "alternateName": "Avi Consultancy Placement & Executive Search",
+    "legalName": "Avi Consultancy",
+    "alternateName": ["Avi Consultancy Placement & Executive Search", "Avi Consultancy Recruitment"],
     "url": "https://aviconsultancy.in",
     "logo": "https://aviconsultancy.in/assets/images/avi_logo_transparent.png",
     "image": "https://aviconsultancy.in/assets/images/hero.jpg",
-    "description": "Pan-India premier career placement consultancy offering 100% free placement for job seekers and direct corporate recruitment solutions across Lucknow, Ayodhya, NCR, and Mumbai.",
+    "description": "Avi Consultancy is a premier career placement and executive search consultancy providing 100% free placement for job seekers and direct corporate recruitment solutions across Lucknow (Head Office), Ayodhya, NCR, and Mumbai.",
     "telephone": "+916394491832",
     "email": "poojapandey.ceo@aviconsultancy.in",
     "priceRange": "Free for Candidates",
+    "currenciesAccepted": "INR",
+    "paymentAccepted": "Cash, Credit Card, Bank Transfer",
     "address": {
       "@type": "PostalAddress",
+      "streetAddress": "Alambagh, Nearby Alamnagar",
       "addressLocality": "Lucknow",
       "addressRegion": "Uttar Pradesh",
+      "postalCode": "226005",
       "addressCountry": "IN"
     },
     "founder": {
       "@type": "Person",
       "name": "Pooja Pandey",
-      "jobTitle": "Managing Director"
-    }
+      "jobTitle": "Founder & Managing Director",
+      "email": "poojapandey.ceo@aviconsultancy.in"
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "opens": "09:30",
+        "closes": "18:30"
+      }
+    ],
+    "areaServed": [
+      { "@type": "City", "name": "Lucknow" },
+      { "@type": "City", "name": "Ayodhya" },
+      { "@type": "City", "name": "Greater Noida" },
+      { "@type": "City", "name": "Mumbai" },
+      { "@type": "Country", "name": "India" }
+    ],
+    "knowsAbout": [
+      "Healthcare & Pharma Recruitment",
+      "IT & Software Placement",
+      "Banking & Financial Services Hiring",
+      "Executive Search & Headhunting",
+      "Resume ATS Optimization",
+      "Academic Leadership & Project Guidance"
+    ],
+    "subOrganization": [
+      {
+        "@type": "LocalBusiness",
+        "name": "Avi Consultancy - Ayodhya Office",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "49/4/16, Panchakosi Parikrama Marg, Behind Eye Hospital, Lavkush Nagar",
+          "addressLocality": "Ayodhya",
+          "addressRegion": "Uttar Pradesh",
+          "postalCode": "224123",
+          "addressCountry": "IN"
+        }
+      },
+      {
+        "@type": "LocalBusiness",
+        "name": "Avi Consultancy - NCR Office",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "8 Siddh Enclave 3, Achheja, PO: Achheja",
+          "addressLocality": "Greater Noida, Gautam Buddha Nagar",
+          "addressRegion": "Uttar Pradesh",
+          "postalCode": "203207",
+          "addressCountry": "IN"
+        }
+      },
+      {
+        "@type": "LocalBusiness",
+        "name": "Avi Consultancy - Mumbai Hub",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Ganesh Nagar, Dombivli, Thane",
+          "addressLocality": "Mumbai",
+          "addressRegion": "Maharashtra",
+          "postalCode": "421202",
+          "addressCountry": "IN"
+        }
+      }
+    ]
   }
   </script>
 </head>
